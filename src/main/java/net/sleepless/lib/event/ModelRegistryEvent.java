@@ -50,10 +50,12 @@ public final class ModelRegistryEvent extends Event {
     }
 
     public void register(Item item, ItemMeshDefinition meshDefinition) {
+        Validate.notNull(item.getRegistryName());
         ModelLoader.setCustomMeshDefinition(item, meshDefinition);
     }
 
     public void register(Block block, IStateMapper mapper) {
+        Validate.notNull(block.getRegistryName());
         ModelLoader.setCustomStateMapper(block, mapper);
     }
 
