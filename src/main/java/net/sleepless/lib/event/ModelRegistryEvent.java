@@ -25,12 +25,28 @@ public final class ModelRegistryEvent extends Event {
         register(item, 0, mrl);
     }
 
+    public void register(Item item, int meta, String variant) {
+        register(item, meta, new ModelResourceLocation(item.getRegistryName(), variant));
+    }
+
     public void register(Item item, String variant) {
         register(item, 0, new ModelResourceLocation(item.getRegistryName(), variant));
     }
 
     public void register(Item item) {
         register(item, "inventory");
+    }
+
+    public void registerAll(Item item, ModelResourceLocation... mrls) {
+        for (int i = 0; i < mrls.length; i++) {
+            register(item, i, mrls[i]);
+        }
+    }
+
+    public void registerAll(Item item, String... variants) {
+        for (int i = 0; i < variants.length; i++) {
+            register(item, i, variants[i]);
+        }
     }
 
     public void register(Item item, ItemMeshDefinition meshDefinition) {
