@@ -1,0 +1,11 @@
+[
+    {
+        "modid": "sleeplesslib",
+        "name": "Sleepless Library",
+        "description": "A library mod for simplifying Forge modding.",
+        "url": "https://git.io/vbDkk",
+        "version": "${version}",
+        "mcversion": "[1.12,1.13)",
+        "authorList": [ "InsomniaKitten" ]
+    }
+]

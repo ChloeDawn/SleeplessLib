@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'https://files.minecraftforge.net/maven' }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+def libVersion = '1.0.0'
+def mcfVersion = '1.12.2-14.23.1.2578'
+def mcpMappings = 'snapshot_20171220'
+
+version = "1.12-$libVersion"
+group = 'net.sleepless.lib'
+archivesBaseName = 'SleeplessLib'
+sourceCompatibility = 1.8
+
+minecraft {
+    version = mcfVersion
+    mappings = mcpMappings
+    runDir = 'run'
+    replaceIn 'SleeplessLib.java'
+    replace '%VERSION%', libVersion
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info', 'pack.mcmeta'
+        expand 'version': libVersion
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info', 'pack.mcmeta'
+    }
+}
