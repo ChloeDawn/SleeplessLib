@@ -9,8 +9,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.sleepless.lib.SleeplessLib;
-import net.sleepless.lib.util.ModContainerUtil;
+import org.apache.commons.lang3.Validate;
 
 @SideOnly(Side.CLIENT)
 public final class ModelRegistryEvent extends Event {
@@ -18,6 +17,7 @@ public final class ModelRegistryEvent extends Event {
     protected ModelRegistryEvent() {}
 
     public void register(Item item, int meta, ModelResourceLocation mrl) {
+        Validate.notNull(item.getRegistryName());
         ModelLoader.setCustomModelResourceLocation(item, meta, mrl);
     }
 
@@ -26,12 +26,7 @@ public final class ModelRegistryEvent extends Event {
     }
 
     public void register(Item item, String variant) {
-        if (item.getRegistryName() != null) {
-            register(item, 0, new ModelResourceLocation(item.getRegistryName(), variant));
-        } else SleeplessLib.LOGGER.warn(
-                "Failed to register model for mod <{}>, as the item's registry name was null!",
-                ModContainerUtil.getActiveModId()
-        );
+        register(item, 0, new ModelResourceLocation(item.getRegistryName(), variant));
     }
 
     public void register(Item item) {
