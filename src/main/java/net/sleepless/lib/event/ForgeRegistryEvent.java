@@ -19,7 +19,9 @@ class ForgeRegistryEvent<V extends IForgeRegistryEntry<V>> extends Event {
     }
 
     public void register(V entry, ResourceLocation name) {
-        registry.register(entry.setRegistryName(name));
+        if (entry.getRegistryName() == null)
+            entry.setRegistryName(name);
+        registry.register(entry);
     }
 
     public V retrieve(ResourceLocation name) {
