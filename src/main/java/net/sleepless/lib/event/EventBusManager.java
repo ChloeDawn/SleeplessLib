@@ -8,6 +8,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleepless.lib.SleeplessLib;
 
 @Mod.EventBusSubscriber(modid = SleeplessLib.ID)
@@ -29,6 +31,12 @@ final class EventBusManager {
     @SubscribeEvent
     protected static void onBiomeRegistry(RegistryEvent.Register<Biome> event) {
         MinecraftForge.EVENT_BUS.post(new ItemRegistryEvent.Post(ForgeRegistries.ITEMS));
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    protected static void onModelRegistry(net.minecraftforge.client.event.ModelRegistryEvent event) {
+        MinecraftForge.EVENT_BUS.post(new net.sleepless.lib.event.ModelRegistryEvent());
     }
 
 }
