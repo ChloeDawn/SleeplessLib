@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 public final class SleeplessLib {
 
     public static final String ID = "sleeplesslib";
-    public static final String NAME = "Sleepless Library";
+    public static final String NAME = "Sleepless Lib";
     public static final String VERSION = "%VERSION%";
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);

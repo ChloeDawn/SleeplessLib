@@ -1,7 +1,7 @@
 [
     {
         "modid": "sleeplesslib",
-        "name": "Sleepless Library",
+        "name": "Sleepless Lib",
         "description": "A library mod for simplifying Forge modding.",
         "url": "https://git.io/vbDkk",
         "version": "${version}",
