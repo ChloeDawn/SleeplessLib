@@ -5,6 +5,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.sleepless.lib.util.ModContainerUtil;
+import org.apache.commons.lang3.Validate;
+
+import java.util.Collection;
 
 class ForgeRegistryEvent<V extends IForgeRegistryEntry<V>> extends Event {
 
@@ -15,13 +19,31 @@ class ForgeRegistryEvent<V extends IForgeRegistryEntry<V>> extends Event {
     }
 
     public void register(V entry) {
+        Validate.notNull(entry.getRegistryName());
         registry.register(entry);
     }
 
     public void register(V entry, ResourceLocation name) {
         if (entry.getRegistryName() == null)
             entry.setRegistryName(name);
-        registry.register(entry);
+        register(entry);
+    }
+
+    public void register(V entry, String name) {
+        String modid = ModContainerUtil.getActiveModId();
+        register(entry, new ResourceLocation(modid, name));
+    }
+
+    public void registerAll(V... entries) {
+        for (V entry : entries) {
+            register(entry);
+        }
+    }
+
+    public void registerAll(Collection<V> entries) {
+        for (V entry : entries) {
+            register(entry);
+        }
     }
 
     public V retrieve(ResourceLocation name) {
