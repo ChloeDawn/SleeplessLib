@@ -10,12 +10,12 @@ public final class WorldHelper {
 
     private WorldHelper() {}
 
-    public static Optional<TileEntity> getTileEntity(World world, BlockPos pos) {
-        return getTileEntity(world, pos, TileEntity.class);
+    public static Optional<TileEntity> getBlockEntity(World world, BlockPos pos) {
+        return getBlockEntity(world, pos, TileEntity.class);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends TileEntity> Optional<T> getTileEntity(World world, BlockPos pos, Class<T> clazz) {
+    public static <T extends TileEntity> Optional<T> getBlockEntity(World world, BlockPos pos, Class<T> clazz) {
         if (isBlockLoaded(world, pos)) {
             TileEntity tile = world.getTileEntity(pos);
             if (tile != null && clazz.isAssignableFrom(tile.getClass())) {
