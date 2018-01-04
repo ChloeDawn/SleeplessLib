@@ -48,13 +48,6 @@ public abstract class SimpleBlockEntity extends TileEntity {
     }
 
     @Override
-    @Nonnull
-    public ITextComponent getDisplayName() {
-        String name = getBlockType().getUnlocalizedName();
-        return new TextComponentTranslation(name + ".name");
-    }
-
-    @Override
     public final SPacketUpdateTileEntity getUpdatePacket() {
         return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
     }
@@ -64,6 +57,13 @@ public abstract class SimpleBlockEntity extends TileEntity {
         NBTTagCompound nbt = super.getUpdateTag();
         serializers.serializeAll(nbt, true);
         return nbt;
+    }
+
+    @Override
+    @Nonnull
+    public ITextComponent getDisplayName() {
+        String name = getBlockType().getUnlocalizedName();
+        return new TextComponentTranslation(name + ".name");
     }
 
     @Override
