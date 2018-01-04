@@ -11,8 +11,8 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 def libVersion = '1.0.0'
-def mcfVersion = '1.12.2-14.23.1.2578'
-def mcpMappings = 'snapshot_20171220'
+def mcfVersion = '1.12.2-14.23.1.2583'
+def mcpMappings = 'snapshot_20180104'
 
 version = "1.12-$libVersion"
 group = 'net.sleepless.lib'
