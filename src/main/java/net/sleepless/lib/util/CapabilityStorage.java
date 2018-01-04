@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public final class CapabilityHolder {
+public final class CapabilityStorage {
 
     private static final Function<Capability<?>, String> ERROR_GLOBAL = capability ->
             String.format("A global capability for <%s> has already been registered!",
@@ -25,13 +25,13 @@ public final class CapabilityHolder {
     private final CapabilityMap global;
     private final SidedCapabilityMap sided;
 
-    private CapabilityHolder(CapabilityMap global, SidedCapabilityMap sided) {
+    private CapabilityStorage(CapabilityMap global, SidedCapabilityMap sided) {
         this.global = global;
         this.sided = sided;
     }
 
-    public static CapabilityHolder.Builder create() {
-        return new CapabilityHolder.Builder();
+    public static CapabilityStorage.Builder create() {
+        return new CapabilityStorage.Builder();
     }
 
     public final boolean test(Capability<?> capability, @Nullable EnumFacing side) {
@@ -72,8 +72,8 @@ public final class CapabilityHolder {
             return this;
         }
 
-        public CapabilityHolder build() {
-            return new CapabilityHolder(global, sided);
+        public CapabilityStorage build() {
+            return new CapabilityStorage(global, sided);
         }
     }
 
