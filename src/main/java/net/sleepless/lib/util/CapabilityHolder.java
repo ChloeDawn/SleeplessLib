@@ -45,7 +45,7 @@ public final class CapabilityHolder {
     }
 
     public final boolean test(Capability<?> capability, @Nullable EnumFacing side) {
-        return sidedCapabilities.containsKey(side) & sidedCapabilities.get(side).containsKey(capability)
+        return sidedCapabilities.containsKey(side) && sidedCapabilities.get(side).containsKey(capability)
                 || side == null && globalCapabilities.containsKey(capability);
     }
 
