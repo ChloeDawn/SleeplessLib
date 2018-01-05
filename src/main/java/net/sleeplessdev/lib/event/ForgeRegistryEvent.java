@@ -3,6 +3,7 @@ package net.sleeplessdev.lib.event;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.IContextSetter;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.sleeplessdev.lib.util.ModContainerUtil;
@@ -10,7 +11,7 @@ import org.apache.commons.lang3.Validate;
 
 import java.util.Collection;
 
-class ForgeRegistryEvent<V extends IForgeRegistryEntry<V>> extends Event {
+class ForgeRegistryEvent<V extends IForgeRegistryEntry<V>> extends Event implements IContextSetter {
 
     private final IForgeRegistry<V> registry;
 
