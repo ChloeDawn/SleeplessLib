@@ -1,4 +1,4 @@
-package net.sleepless.lib.block.entity;
+package net.sleeplessdev.lib.block.entity;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -10,8 +10,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.sleepless.lib.util.capability.CapabilityStorage;
-import net.sleepless.lib.util.serializable.SerializerStorage;
+import net.sleeplessdev.lib.util.capability.CapabilityStorage;
+import net.sleeplessdev.lib.util.serializable.SerializerStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

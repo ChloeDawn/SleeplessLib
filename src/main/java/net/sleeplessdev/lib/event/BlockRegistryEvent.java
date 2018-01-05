@@ -1,9 +1,9 @@
-package net.sleepless.lib.event;
+package net.sleeplessdev.lib.event;
 
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.sleepless.lib.util.ModContainerUtil;
+import net.sleeplessdev.lib.util.ModContainerUtil;
 
 public final class BlockRegistryEvent extends ForgeRegistryEvent<Block> {
 

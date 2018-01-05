@@ -1,9 +1,10 @@
-package net.sleepless.lib.block;
+package net.sleeplessdev.lib.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.sleepless.lib.util.BlockMaterial;
-import net.sleepless.lib.util.ColorVariant;
+import net.sleeplessdev.lib.util.BlockMaterial;
+import net.sleeplessdev.lib.util.ColorVariant;
 
 public class SimpleBlock extends Block {
 
@@ -19,6 +20,7 @@ public class SimpleBlock extends Block {
         setHardness(material.getHardness());
         setResistance(material.getResistance());
         setSoundType(material.getSound());
+
     }
 
     @Override
@@ -31,4 +33,8 @@ public class SimpleBlock extends Block {
         return super.getUnlocalizedName().replace("tile.", "block.");
     }
 
+    @Override
+    public BlockStateContainer getBlockState() {
+        return super.getBlockState();
+    }
 }

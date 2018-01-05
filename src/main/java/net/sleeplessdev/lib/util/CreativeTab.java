@@ -1,4 +1,4 @@
-package net.sleepless.lib.util;
+package net.sleeplessdev.lib.util;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;

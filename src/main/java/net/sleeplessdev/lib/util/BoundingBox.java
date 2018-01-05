@@ -1,4 +1,4 @@
-package net.sleepless.lib.util;
+package net.sleeplessdev.lib.util;
 
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;

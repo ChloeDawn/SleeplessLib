@@ -1,4 +1,4 @@
-package net.sleepless.lib.util.capability;
+package net.sleeplessdev.lib.util.capability;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

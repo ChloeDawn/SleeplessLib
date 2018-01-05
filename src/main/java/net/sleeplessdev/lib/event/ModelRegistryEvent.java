@@ -1,4 +1,4 @@
-package net.sleepless.lib.event;
+package net.sleeplessdev.lib.event;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.ItemMeshDefinition;

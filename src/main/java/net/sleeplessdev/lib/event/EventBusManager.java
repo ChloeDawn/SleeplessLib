@@ -1,4 +1,4 @@
-package net.sleepless.lib.event;
+package net.sleeplessdev.lib.event;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.sleepless.lib.SleeplessLib;
+import net.sleeplessdev.lib.SleeplessLib;
 
 @Mod.EventBusSubscriber(modid = SleeplessLib.ID)
 final class EventBusManager {
@@ -36,7 +36,7 @@ final class EventBusManager {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     protected static void onModelRegistry(net.minecraftforge.client.event.ModelRegistryEvent event) {
-        MinecraftForge.EVENT_BUS.post(new net.sleepless.lib.event.ModelRegistryEvent());
+        MinecraftForge.EVENT_BUS.post(new net.sleeplessdev.lib.event.ModelRegistryEvent());
     }
 
 }

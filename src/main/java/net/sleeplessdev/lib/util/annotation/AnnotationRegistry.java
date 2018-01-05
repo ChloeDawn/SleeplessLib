@@ -1,4 +1,4 @@
-package net.sleepless.lib.util.annotation;
+package net.sleeplessdev.lib.util.annotation;
 
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

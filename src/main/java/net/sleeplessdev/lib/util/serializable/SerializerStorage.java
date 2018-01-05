@@ -1,4 +1,4 @@
-package net.sleepless.lib.util.serializable;
+package net.sleeplessdev.lib.util.serializable;
 
 import net.minecraft.nbt.NBTTagCompound;
 

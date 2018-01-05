@@ -1,9 +1,9 @@
-package net.sleepless.lib.util;
+package net.sleeplessdev.lib.util;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import net.sleepless.lib.SleeplessLib;
+import net.sleeplessdev.lib.SleeplessLib;
 
 public final class ModContainerUtil {
 

@@ -1,11 +1,11 @@
-package net.sleepless.lib.event;
+package net.sleeplessdev.lib.event;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.sleepless.lib.util.ModContainerUtil;
+import net.sleeplessdev.lib.util.ModContainerUtil;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Collection;
