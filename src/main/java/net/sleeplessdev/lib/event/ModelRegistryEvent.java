@@ -14,7 +14,7 @@ import org.apache.commons.lang3.Validate;
 
 public final class ModelRegistryEvent extends Event implements IContextSetter {
 
-    protected ModelRegistryEvent() {}
+    protected ModelRegistryEvent(net.minecraftforge.client.event.ModelRegistryEvent event) {}
 
     @SideOnly(Side.CLIENT)
     public void register(Item item, int meta, ModelResourceLocation mrl) {

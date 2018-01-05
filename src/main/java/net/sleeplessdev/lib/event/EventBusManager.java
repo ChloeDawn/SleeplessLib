@@ -36,7 +36,7 @@ final class EventBusManager {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     protected static void onModelRegistry(net.minecraftforge.client.event.ModelRegistryEvent event) {
-        MinecraftForge.EVENT_BUS.post(new net.sleeplessdev.lib.event.ModelRegistryEvent());
+        MinecraftForge.EVENT_BUS.post(new net.sleeplessdev.lib.event.ModelRegistryEvent(event));
     }
 
 }
