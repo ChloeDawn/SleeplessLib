@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.sleepless.lib.util.annotation.AnnotationRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +18,9 @@ public final class SleeplessLib {
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
     @Mod.EventHandler
-    public void onPreInit(FMLPreInitializationEvent event) {}
+    public void onPreInit(FMLPreInitializationEvent event) {
+        AnnotationRegistry.collectData(event);
+    }
 
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event) {}
