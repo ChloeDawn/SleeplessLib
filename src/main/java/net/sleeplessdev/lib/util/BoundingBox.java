@@ -1,79 +1,56 @@
 package net.sleeplessdev.lib.util;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Predicate;
+import java.util.EnumMap;
 
-public final class BoundingBox {
+public class BoundingBox {
 
     private final ImmutableMap<EnumFacing, AxisAlignedBB> aabbMap;
 
-    private BoundingBox(AxisAlignedBB aabbNorth, Predicate<EnumFacing> filter) {
-        final Map<EnumFacing, AxisAlignedBB> aabbMap = new HashMap<>();
-        for (EnumFacing facing : EnumFacing.values()) {
-            if (filter.test(facing)) {
-                aabbMap.put(facing, rotateAABB(aabbNorth, facing));
-            }
+    private BoundingBox(AxisAlignedBB aabbNorth) {
+        final EnumMap<EnumFacing, AxisAlignedBB> aabbMap = new EnumMap<>(EnumFacing.class);
+        if (aabbNorth != null) for (EnumFacing facing : EnumFacing.VALUES) {
+            aabbMap.put(facing, rotateAABB(aabbNorth, facing));
         }
-        this.aabbMap = ImmutableMap.copyOf(aabbMap);
-    }
-
-    public static BoundingBox of(AxisAlignedBB aabb, Predicate<EnumFacing> filter) {
-        return new BoundingBox(aabb, filter);
+        this.aabbMap = Maps.immutableEnumMap(aabbMap);
     }
 
     public static BoundingBox of(AxisAlignedBB aabb) {
-        return of(aabb, facing -> true);
-    }
-
-    public static BoundingBox of(double minX, double minY, double minZ, double maxX, double maxY, double maxZ, Predicate<EnumFacing> filter) {
-        return of(new AxisAlignedBB(minX / 16.0, minY / 16.0, minZ / 16.0, maxX / 16.0, maxY / 16.0, maxZ / 16.0), filter);
+        return new BoundingBox(aabb);
     }
 
     public static BoundingBox of(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return of(minX, minY, minZ, maxX, maxY, maxZ, facing -> true);
-    }
-
-    public static BoundingBox of(Vec3d min, Vec3d max, Predicate<EnumFacing> filter) {
-        return of(min.x, min.y, min.z, max.x, max.y, max.z, filter);
+        return of(new AxisAlignedBB(minX / 16.0, minY / 16.0, minZ / 16.0, maxX / 16.0, maxY / 16.0, maxZ / 16.0));
     }
 
     public static BoundingBox of(Vec3d min, Vec3d max) {
         return of(min.x, min.y, min.z, max.x, max.y, max.z);
     }
 
-    public AxisAlignedBB get(EnumFacing facing) {
-        return aabbMap.getOrDefault(facing, Block.FULL_BLOCK_AABB);
+    public static BoundingBox ofSingleton(AxisAlignedBB aabb) {
+        return new SingletonBoundingBox(aabb);
     }
 
-    public AxisAlignedBB getDown() {
-        return get(EnumFacing.DOWN);
+    public static BoundingBox ofSingleton(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        return ofSingleton(new AxisAlignedBB(minX / 16.0, minY / 16.0, minZ / 16.0, maxX / 16.0, maxY / 16.0, maxZ / 16.0));
     }
 
-    public AxisAlignedBB getUp() {
-        return get(EnumFacing.UP);
+    public static BoundingBox ofSingleton(Vec3d min, Vec3d max) {
+        return ofSingleton(min.x, min.y, min.z, max.x, max.y, max.z);
     }
 
-    public AxisAlignedBB getNorth() {
+    public AxisAlignedBB getDefault() {
         return get(EnumFacing.NORTH);
     }
 
-    public AxisAlignedBB getSouth() {
-        return get(EnumFacing.SOUTH);
-    }
-
-    public AxisAlignedBB getWest() {
-        return get(EnumFacing.WEST);
-    }
-
-    public AxisAlignedBB getEast() {
-        return get(EnumFacing.EAST);
+    public AxisAlignedBB get(EnumFacing facing) {
+        return aabbMap.getOrDefault(facing, Block.FULL_BLOCK_AABB);
     }
 
     private AxisAlignedBB rotateAABB(AxisAlignedBB aabbNorth, EnumFacing facing) {
@@ -87,6 +64,28 @@ public final class BoundingBox {
             case EAST: return new AxisAlignedBB(1 - maxZ, minY, 1 - maxX, 1 - minZ, maxY, 1 - minX);
         }
         return aabbNorth;
+    }
+
+    /**
+     * A micro-optimization to avoid map lookups for single-facing AABBs
+     */
+    private static class SingletonBoundingBox extends BoundingBox {
+        private final AxisAlignedBB aabbNorth;
+
+        private SingletonBoundingBox(AxisAlignedBB aabbNorth) {
+            super(null);
+            this.aabbNorth = aabbNorth;
+        }
+
+        @Override
+        public AxisAlignedBB getDefault() {
+            return aabbNorth;
+        }
+
+        @Override
+        public AxisAlignedBB get(EnumFacing facing) {
+            return aabbNorth;
+        }
     }
 
 }
