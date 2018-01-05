@@ -6,7 +6,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.sleeplessdev.lib.SleeplessLib;
-import net.sleeplessdev.lib.util.ModContainerUtil;
 
 public final class ItemRegistryEvent extends ForgeRegistryEvent<Item> {
 
@@ -29,15 +28,6 @@ public final class ItemRegistryEvent extends ForgeRegistryEvent<Item> {
             String modid = name.getResourceDomain();
             String path = name.getResourcePath();
             entry.setUnlocalizedName(modid + "." + path);
-        }
-        super.register(entry, name);
-    }
-
-    @Override
-    public void register(Item entry, String name) {
-        if ("item.null".equals(entry.getUnlocalizedName())) {
-            String modid = ModContainerUtil.getActiveModId();
-            entry.setUnlocalizedName(modid + "." + name);
         }
         super.register(entry, name);
     }

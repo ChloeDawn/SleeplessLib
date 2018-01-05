@@ -3,7 +3,6 @@ package net.sleeplessdev.lib.event;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.sleeplessdev.lib.util.ModContainerUtil;
 
 public final class BlockRegistryEvent extends ForgeRegistryEvent<Block> {
 
@@ -17,15 +16,6 @@ public final class BlockRegistryEvent extends ForgeRegistryEvent<Block> {
             String modid = name.getResourceDomain();
             String path = name.getResourcePath();
             entry.setUnlocalizedName(modid + "." + path);
-        }
-        super.register(entry, name);
-    }
-
-    @Override
-    public void register(Block entry, String name) {
-        if ("block.null".equals(entry.getUnlocalizedName())) {
-            String modid = ModContainerUtil.getActiveModId();
-            entry.setUnlocalizedName(modid + "." + name);
         }
         super.register(entry, name);
     }
