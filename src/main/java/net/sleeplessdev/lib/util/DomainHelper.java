@@ -5,33 +5,28 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.sleeplessdev.lib.SleeplessLib;
 
-import java.util.function.Function;
+import javax.annotation.Nullable;
 
 public final class DomainHelper {
 
-    private static final Function<ModContainer, String> DOMAIN_FUNCTION = container -> {
-        if (container != null) return container.getModId();
-        new IllegalStateException(
-                "Cannot retrieve modid from a null mod container!"
-        ).printStackTrace();
-        return SleeplessLib.ID;
-    };
-
-    private static final Function<String, ResourceLocation> RL_FUNCTION = string ->
-            new ResourceLocation(DOMAIN_FUNCTION.apply(getActiveContainer()), string);
-
     private DomainHelper() {}
 
+    @Nullable
     public static ModContainer getActiveContainer() {
         return Loader.instance().activeModContainer();
     }
 
     public static String getActiveModId() {
-        return DOMAIN_FUNCTION.apply(getActiveContainer());
+        ModContainer c = getActiveContainer();
+        if (c != null) return c.getModId();
+        new IllegalStateException(
+                "Cannot retrieve modid from a null mod container!"
+        ).printStackTrace();
+        return SleeplessLib.ID;
     }
 
     public static ResourceLocation applyActiveDomain(String path) {
-        return RL_FUNCTION.apply(path);
+        return new ResourceLocation(getActiveModId(), path);
     }
 
     public static ResourceLocation applyActiveDomain(ResourceLocation name) {
