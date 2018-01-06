@@ -61,7 +61,9 @@ public interface ICustomSelectionBox {
      * @param pos   The current position of the block.
      * @return The minimum range for the selection box.
      */
-    AxisAlignedBB getMinimumRange(IBlockState state, World world, BlockPos pos);
+    default AxisAlignedBB getMinimumRange(IBlockState state, World world, BlockPos pos) {
+        return new AxisAlignedBB(0.5D, 0.5D, 0.5D, 0.5D, 0.5D, 0.5D);
+    }
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
