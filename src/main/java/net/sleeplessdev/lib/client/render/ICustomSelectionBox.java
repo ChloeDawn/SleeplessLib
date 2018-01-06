@@ -60,40 +60,44 @@ public interface ICustomSelectionBox {
             World world = event.getPlayer().world;
             BlockPos pos = event.getTarget().getBlockPos();
             IBlockState state = world.getBlockState(pos).getActualState(world, pos);
+
             if (state.getBlock() instanceof ICustomSelectionBox) {
                 ICustomSelectionBox icsb = ((ICustomSelectionBox) state.getBlock());
                 EntityPlayer player = event.getPlayer();
-                float pTicks = event.getPartialTicks();
+
                 List<AxisAlignedBB> boxes = new ArrayList<>();
                 AxisAlignedBB entityBox = player.getEntityBoundingBox().grow(6.0D);
                 state.addCollisionBoxToList(world, pos, entityBox, boxes, player, true);
+
+                if (boxes.isEmpty()) return;
                 if (icsb.getRenderType(state, world, pos) == SelectionRenderType.SINGLE) {
                     AxisAlignedBB actualBox = icsb.getMinimumRange(state, world, pos).offset(pos);
                     for (AxisAlignedBB box : boxes) actualBox = actualBox.union(box);
                     boxes = Collections.singletonList(actualBox);
                 }
-                if (!boxes.isEmpty()) {
-                    GlStateManager.disableAlpha();
-                    GlStateManager.enableBlend();
-                    GlStateManager.tryBlendFuncSeparate(
-                            GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                            GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO
-                    );
-                    GlStateManager.glLineWidth(2.0F);
-                    GlStateManager.disableTexture2D();
-                    GlStateManager.depthMask(false);
-                    double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * pTicks;
-                    double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * pTicks;
-                    double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * pTicks;
-                    for (AxisAlignedBB box : boxes) {
-                        AxisAlignedBB target = box.grow(0.002D).offset(-offsetX, -offsetY, -offsetZ);
-                        RenderGlobal.drawSelectionBoundingBox(target, 0.0F, 0.0F, 0.0F, 0.4F);
-                    }
-                    GlStateManager.depthMask(true);
-                    GlStateManager.enableTexture2D();
-                    GlStateManager.disableBlend();
-                    GlStateManager.enableAlpha();
+
+                GlStateManager.disableAlpha();
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(
+                        GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                        GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO
+                );
+                GlStateManager.glLineWidth(2.0F);
+                GlStateManager.disableTexture2D();
+                GlStateManager.depthMask(false);
+                double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
+                double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
+                double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
+
+                for (AxisAlignedBB box : boxes) {
+                    AxisAlignedBB target = box.grow(0.002D).offset(-offsetX, -offsetY, -offsetZ);
+                    RenderGlobal.drawSelectionBoundingBox(target, 0.0F, 0.0F, 0.0F, 0.4F);
                 }
+
+                GlStateManager.depthMask(true);
+                GlStateManager.enableTexture2D();
+                GlStateManager.disableBlend();
+                GlStateManager.enableAlpha();
                 event.setCanceled(true);
             }
         }
