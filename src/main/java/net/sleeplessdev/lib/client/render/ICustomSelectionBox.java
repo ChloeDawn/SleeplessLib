@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -25,22 +26,13 @@ import java.util.Map;
 /**
  * This interface provides methods for passing bounding boxes and the render type of the block's selection box.
  * It is designed to be implemented on an {@link Block} class and will not function anywhere else.
- * Note that whilst this interface is implemented on your block, the only rendered selection boxes will be
- * the ones passed in {@link ICustomSelectionBox#getBoundingBoxes(List, IBlockState, World, BlockPos)}.
- * Rendering of other selection boxes are cancelled on {@link DrawBlockHighlightEvent} by the interface.
+ *
+ * Note that whilst this interface is implemented on your block, the only rendered selection boxes
+ * will be the ones passed in {@link Block#addCollisionBoxToList}. Rendering of other selection boxes
+ * is cancelled on {@link ICustomSelectionBox#onDrawBlockHighlight(DrawBlockHighlightEvent)}
  */
 @Mod.EventBusSubscriber(modid = SleeplessLib.ID)
 public interface ICustomSelectionBox {
-
-    /**
-     * Collects all bounding boxes to the passed {@link List<AxisAlignedBB>} for rendering.
-     * This method will be removed once I find a way to handle this directly through the state collision boxes.
-     * @param boxes The list of bounding boxes.
-     * @param state The actual state of the block.
-     * @param world The current world the block is in.
-     * @param pos   The current position of the block.
-     */
-    void getBoundingBoxes(List<AxisAlignedBB> boxes, IBlockState state, World world, BlockPos pos);
 
     /**
      * Determines how the selection box should be rendered.
@@ -89,8 +81,8 @@ public interface ICustomSelectionBox {
                 double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * pTicks;
                 double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * pTicks;
                 double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * pTicks;
-                for (AxisAlignedBB box : type.getBoxesFor(iscb, state, world, pos)) {
-                    AxisAlignedBB target = box.grow(0.002D).offset(pos).offset(-offsetX, -offsetY, -offsetZ);
+                for (AxisAlignedBB box : type.getBoxesFor(iscb, state, world, pos, player)) {
+                    AxisAlignedBB target = box.grow(0.002D).offset(-offsetX, -offsetY, -offsetZ);
                     RenderGlobal.drawSelectionBoundingBox(target, 0.0F, 0.0F, 0.0F, 0.4F);
                 }
                 GlStateManager.depthMask(true);
@@ -106,12 +98,16 @@ public interface ICustomSelectionBox {
 
         SINGLE {
             @Override
-            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos) {
+            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) {
+                Cache.SINGLE.clear();
                 if (!Cache.SINGLE.containsKey(state)) {
                     List<AxisAlignedBB> boxes = new ArrayList<>();
-                    icsb.getBoundingBoxes(boxes, state, world, pos);
-                    AxisAlignedBB actualBox = icsb.getMinimumRange(state, world, pos);
-                    for (AxisAlignedBB box : boxes) actualBox = actualBox.union(box);
+                    AxisAlignedBB entityBox = entity.getEntityBoundingBox().grow(6.0D);
+                    state.addCollisionBoxToList(world, pos, entityBox, boxes, entity, true);
+                    AxisAlignedBB actualBox = icsb.getMinimumRange(state, world, pos).offset(pos);
+                    for (AxisAlignedBB box : boxes) {
+                        actualBox = actualBox.union(box);
+                    }
                     Cache.SINGLE.put(state, actualBox);
                 }
                 return Collections.singletonList(Cache.SINGLE.get(state));
@@ -120,17 +116,19 @@ public interface ICustomSelectionBox {
 
         MULTI {
             @Override
-            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos) {
+            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) {
+                Cache.MULTI.clear();
                 if (!Cache.MULTI.containsKey(state)) {
                     List<AxisAlignedBB> boxes = new ArrayList<>();
-                    icsb.getBoundingBoxes(boxes, state, world, pos);
+                    AxisAlignedBB entityBox = entity.getEntityBoundingBox().grow(6.0D);
+                    state.addCollisionBoxToList(world, pos, entityBox, boxes, entity, true);
                     Cache.MULTI.put(state, boxes);
                 }
                 return Cache.MULTI.get(state);
             }
         };
 
-        protected abstract List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos);
+        protected abstract List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity);
     }
 
     final class Cache {
