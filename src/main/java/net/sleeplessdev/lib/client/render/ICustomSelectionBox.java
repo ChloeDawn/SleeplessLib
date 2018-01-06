@@ -99,7 +99,6 @@ public interface ICustomSelectionBox {
         SINGLE {
             @Override
             protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) {
-                Cache.SINGLE.clear();
                 if (!Cache.SINGLE.containsKey(state)) {
                     List<AxisAlignedBB> boxes = new ArrayList<>();
                     AxisAlignedBB entityBox = entity.getEntityBoundingBox().grow(6.0D);
@@ -117,7 +116,6 @@ public interface ICustomSelectionBox {
         MULTI {
             @Override
             protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) {
-                Cache.MULTI.clear();
                 if (!Cache.MULTI.containsKey(state)) {
                     List<AxisAlignedBB> boxes = new ArrayList<>();
                     AxisAlignedBB entityBox = entity.getEntityBoundingBox().grow(6.0D);
