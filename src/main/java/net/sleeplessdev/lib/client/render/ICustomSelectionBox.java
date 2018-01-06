@@ -55,7 +55,7 @@ public interface ICustomSelectionBox {
 
     /**
      * Determines the minimum bounds of the selection box for {@link SelectionRenderType#SINGLE}
-     * The render expands around this as it collects additional bounding boxes.
+     * The rendered bounding box expands around this as it collects additional bounding boxes.
      * @param state The actual state of the block.
      * @param world The current world the block is in.
      * @param pos   The current position of the block.
