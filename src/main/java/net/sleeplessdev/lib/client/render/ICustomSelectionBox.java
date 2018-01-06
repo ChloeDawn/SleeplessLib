@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This interface provides methods for passing bounding boxes and the render type of the block's selection box.
+ * This interface provides custom selection box rendering for a block, determined by the passed type.
  * It is designed to be implemented on an {@link Block} class and will not function anywhere else.
  *
  * Note that whilst this interface is implemented on your block, the only rendered selection boxes
