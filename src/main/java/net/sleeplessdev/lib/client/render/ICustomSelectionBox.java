@@ -1,12 +1,9 @@
 package net.sleeplessdev.lib.client.render;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -22,13 +19,10 @@ import net.sleeplessdev.lib.SleeplessLib;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This interface provides custom selection box rendering for a block, determined by the passed type.
  * It is designed to be implemented on an {@link Block} class and will not function anywhere else.
- *
  * Note that whilst this interface is implemented on your block, the only rendered selection boxes
  * will be the ones passed in {@link Block#addCollisionBoxToList}. Rendering of other selection boxes
  * is cancelled on {@link ICustomSelectionBox#onDrawBlockHighlight(DrawBlockHighlightEvent)}
@@ -67,76 +61,47 @@ public interface ICustomSelectionBox {
             BlockPos pos = event.getTarget().getBlockPos();
             IBlockState state = world.getBlockState(pos).getActualState(world, pos);
             if (state.getBlock() instanceof ICustomSelectionBox) {
-                ICustomSelectionBox iscb = ((ICustomSelectionBox) state.getBlock());
+                ICustomSelectionBox icsb = ((ICustomSelectionBox) state.getBlock());
                 EntityPlayer player = event.getPlayer();
-                SelectionRenderType type = iscb.getRenderType(state, world, pos);
                 float pTicks = event.getPartialTicks();
-                GlStateManager.disableAlpha();
-                GlStateManager.enableBlend();
-                GlStateManager.tryBlendFuncSeparate(
-                        GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                        GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO
-                );
-                GlStateManager.glLineWidth(2.0F);
-                GlStateManager.disableTexture2D();
-                GlStateManager.depthMask(false);
-                double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * pTicks;
-                double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * pTicks;
-                double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * pTicks;
-                try {
-                    for (AxisAlignedBB box : type.getBoxesFor(iscb, state, world, pos, player)) {
+                List<AxisAlignedBB> boxes = new ArrayList<>();
+                AxisAlignedBB entityBox = player.getEntityBoundingBox().grow(6.0D);
+                state.addCollisionBoxToList(world, pos, entityBox, boxes, player, true);
+                if (icsb.getRenderType(state, world, pos) == SelectionRenderType.SINGLE) {
+                    AxisAlignedBB actualBox = icsb.getMinimumRange(state, world, pos).offset(pos);
+                    for (AxisAlignedBB box : boxes) actualBox = actualBox.union(box);
+                    boxes = Collections.singletonList(actualBox);
+                }
+                if (!boxes.isEmpty()) {
+                    GlStateManager.disableAlpha();
+                    GlStateManager.enableBlend();
+                    GlStateManager.tryBlendFuncSeparate(
+                            GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                            GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO
+                    );
+                    GlStateManager.glLineWidth(2.0F);
+                    GlStateManager.disableTexture2D();
+                    GlStateManager.depthMask(false);
+                    double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * pTicks;
+                    double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * pTicks;
+                    double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * pTicks;
+                    for (AxisAlignedBB box : boxes) {
                         AxisAlignedBB target = box.grow(0.002D).offset(-offsetX, -offsetY, -offsetZ);
                         RenderGlobal.drawSelectionBoundingBox(target, 0.0F, 0.0F, 0.0F, 0.4F);
                     }
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                    GlStateManager.depthMask(true);
+                    GlStateManager.enableTexture2D();
+                    GlStateManager.disableBlend();
+                    GlStateManager.enableAlpha();
                 }
-                GlStateManager.depthMask(true);
-                GlStateManager.enableTexture2D();
-                GlStateManager.disableBlend();
-                GlStateManager.enableAlpha();
                 event.setCanceled(true);
             }
         }
     }
 
     enum SelectionRenderType {
-
-        SINGLE {
-            @Override
-            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) throws ExecutionException {
-                    return STATE_CACHE.get(state, () -> {
-                        List<AxisAlignedBB> boxes = new ArrayList<>();
-                        AxisAlignedBB entityBox = entity.getEntityBoundingBox().grow(6.0D);
-                        state.addCollisionBoxToList(world, pos, entityBox, boxes, entity, true);
-                        AxisAlignedBB actualBox = icsb.getMinimumRange(state, world, pos).offset(pos);
-                        for (AxisAlignedBB box : boxes) {
-                            actualBox = actualBox.union(box);
-                        }
-                        return Collections.singletonList(actualBox);
-                    });
-                }
-        },
-
-        MULTI {
-            @Override
-            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) throws ExecutionException {
-                return STATE_CACHE.get(state, () -> {
-                    List<AxisAlignedBB> boxes = new ArrayList<>();
-                    AxisAlignedBB entityBox = entity.getEntityBoundingBox().grow(6.0D);
-                    state.addCollisionBoxToList(world, pos, entityBox, boxes, entity, true);
-                    return boxes;
-                });
-            }
-        };
-
-        private static final Cache<IBlockState, List<AxisAlignedBB>> STATE_CACHE = CacheBuilder.newBuilder()
-                .expireAfterAccess(1, TimeUnit.MINUTES)
-                .maximumSize(5000)
-                .build();
-
-        protected abstract List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) throws ExecutionException;
-
+        SINGLE,
+        MULTI
     }
 
 }
