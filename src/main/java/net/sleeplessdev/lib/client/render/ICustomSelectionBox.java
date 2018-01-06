@@ -1,5 +1,7 @@
 package net.sleeplessdev.lib.client.render;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,9 +21,9 @@ import net.sleeplessdev.lib.SleeplessLib;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This interface provides custom selection box rendering for a block, determined by the passed type.
@@ -81,9 +83,13 @@ public interface ICustomSelectionBox {
                 double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * pTicks;
                 double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * pTicks;
                 double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * pTicks;
-                for (AxisAlignedBB box : type.getBoxesFor(iscb, state, world, pos, player)) {
-                    AxisAlignedBB target = box.grow(0.002D).offset(-offsetX, -offsetY, -offsetZ);
-                    RenderGlobal.drawSelectionBoundingBox(target, 0.0F, 0.0F, 0.0F, 0.4F);
+                try {
+                    for (AxisAlignedBB box : type.getBoxesFor(iscb, state, world, pos, player)) {
+                        AxisAlignedBB target = box.grow(0.002D).offset(-offsetX, -offsetY, -offsetZ);
+                        RenderGlobal.drawSelectionBoundingBox(target, 0.0F, 0.0F, 0.0F, 0.4F);
+                    }
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
                 }
                 GlStateManager.depthMask(true);
                 GlStateManager.enableTexture2D();
@@ -98,42 +104,39 @@ public interface ICustomSelectionBox {
 
         SINGLE {
             @Override
-            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) {
-                if (!Cache.SINGLE.containsKey(state)) {
-                    List<AxisAlignedBB> boxes = new ArrayList<>();
-                    AxisAlignedBB entityBox = entity.getEntityBoundingBox().grow(6.0D);
-                    state.addCollisionBoxToList(world, pos, entityBox, boxes, entity, true);
-                    AxisAlignedBB actualBox = icsb.getMinimumRange(state, world, pos).offset(pos);
-                    for (AxisAlignedBB box : boxes) {
-                        actualBox = actualBox.union(box);
-                    }
-                    Cache.SINGLE.put(state, actualBox);
+            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) throws ExecutionException {
+                    return STATE_CACHE.get(state, () -> {
+                        List<AxisAlignedBB> boxes = new ArrayList<>();
+                        AxisAlignedBB entityBox = entity.getEntityBoundingBox().grow(6.0D);
+                        state.addCollisionBoxToList(world, pos, entityBox, boxes, entity, true);
+                        AxisAlignedBB actualBox = icsb.getMinimumRange(state, world, pos).offset(pos);
+                        for (AxisAlignedBB box : boxes) {
+                            actualBox = actualBox.union(box);
+                        }
+                        return Collections.singletonList(actualBox);
+                    });
                 }
-                return Collections.singletonList(Cache.SINGLE.get(state));
-            }
         },
 
         MULTI {
             @Override
-            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) {
-                if (!Cache.MULTI.containsKey(state)) {
+            protected List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) throws ExecutionException {
+                return STATE_CACHE.get(state, () -> {
                     List<AxisAlignedBB> boxes = new ArrayList<>();
                     AxisAlignedBB entityBox = entity.getEntityBoundingBox().grow(6.0D);
                     state.addCollisionBoxToList(world, pos, entityBox, boxes, entity, true);
-                    Cache.MULTI.put(state, boxes);
-                }
-                return Cache.MULTI.get(state);
+                    return boxes;
+                });
             }
         };
 
-        protected abstract List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity);
-    }
+        private static final Cache<IBlockState, List<AxisAlignedBB>> STATE_CACHE = CacheBuilder.newBuilder()
+                .expireAfterAccess(1, TimeUnit.MINUTES)
+                .maximumSize(5000)
+                .build();
 
-    final class Cache {
-        private static final Map<IBlockState, AxisAlignedBB> SINGLE = new HashMap<>();
-        private static final Map<IBlockState, List<AxisAlignedBB>> MULTI = new HashMap<>();
+        protected abstract List<AxisAlignedBB> getBoxesFor(ICustomSelectionBox icsb, IBlockState state, World world, BlockPos pos, Entity entity) throws ExecutionException;
 
-        private Cache() {}
     }
 
 }
