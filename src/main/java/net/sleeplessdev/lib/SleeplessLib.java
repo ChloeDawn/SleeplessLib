@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.sleeplessdev.lib.util.AnnotationRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,9 +19,7 @@ public final class SleeplessLib {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-        // AnnotationRegistry.collectData(event);
-        // FIXME: Requires call after all dependants are present
-        // TODO: Create a post-dependants child mod?
+        AnnotationRegistry.collectData(event);
     }
 
     @Mod.EventHandler

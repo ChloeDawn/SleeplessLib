@@ -9,7 +9,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.sleeplessdev.lib.util.annotation.TabHolder;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,16 +41,12 @@ public final class AnnotationRegistry {
         Map<String, T> map = new HashMap<>();
         for (ASMData entry : data.get(target.getCanonicalName())) {
             try {
-                for (Field field : entry.getClass().getDeclaredFields()) {
-                    if (entry.getObjectName().equals(field.getName())) {
-                        Object obj = field.get(null);
-                        if (type.isAssignableFrom(obj.getClass())) {
-                            map.put(entry.getObjectName(), type.cast(obj));
-                        }
-                        break;
-                    }
+                Class<?> clazz = Class.forName(entry.getClassName());
+                Object obj = clazz.getDeclaredField(entry.getObjectName()).get(null);
+                if (type.isAssignableFrom(obj.getClass())) {
+                    map.put(entry.getObjectName(), type.cast(obj));
                 }
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException | ClassNotFoundException | NoSuchFieldException e) {
                 e.printStackTrace();
             }
         }
