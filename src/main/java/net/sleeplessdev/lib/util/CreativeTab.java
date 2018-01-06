@@ -19,7 +19,7 @@ public class CreativeTab extends CreativeTabs {
     }
 
     public CreativeTab(Supplier<ItemStack> icon) {
-        this(ModContainerUtil.getActiveModId(), icon);
+        this(DomainHelper.getActiveModId(), icon);
     }
 
     @Override

@@ -29,11 +29,13 @@ public final class ModelRegistryEvent extends Event implements IContextSetter {
 
     @SideOnly(Side.CLIENT)
     public void register(Item item, int meta, String variant) {
+        Validate.notNull(item.getRegistryName());
         register(item, meta, new ModelResourceLocation(item.getRegistryName(), variant));
     }
 
     @SideOnly(Side.CLIENT)
     public void register(Item item, String variant) {
+        Validate.notNull(item.getRegistryName());
         register(item, 0, new ModelResourceLocation(item.getRegistryName(), variant));
     }
 
