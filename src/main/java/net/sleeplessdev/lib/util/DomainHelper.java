@@ -3,6 +3,7 @@ package net.sleeplessdev.lib.util;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
+import net.sleeplessdev.lib.SleeplessLib;
 
 import java.util.function.Function;
 
@@ -10,7 +11,10 @@ public final class DomainHelper {
 
     private static final Function<ModContainer, String> DOMAIN_FUNCTION = container -> {
         if (container != null) return container.getModId();
-        throw new IllegalStateException("Cannot retrieve modid from a null mod container!");
+        new IllegalStateException(
+                "Cannot retrieve modid from a null mod container!"
+        ).printStackTrace();
+        return SleeplessLib.ID;
     };
 
     private static final Function<String, ResourceLocation> RL_FUNCTION = string ->
