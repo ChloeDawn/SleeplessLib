@@ -26,7 +26,7 @@ public final class WorldHelper {
     }
 
     public static boolean isBlockLoaded(World world, BlockPos pos) {
-        return pos.getY() >= 0 && pos.getY() <= 255 && world.isBlockLoaded(pos);
+        return world.isValid(pos) && world.isBlockLoaded(pos);
     }
 
 }
