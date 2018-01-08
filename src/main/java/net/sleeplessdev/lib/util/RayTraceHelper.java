@@ -14,7 +14,7 @@ public final class RayTraceHelper {
     private RayTraceHelper() {}
 
     @Nullable
-    public static RayTraceResult rayTraceMultiAABB(List<AxisAlignedBB> aabbList, BlockPos pos, Vec3d start, Vec3d end) {
+    public static RayTraceResult rayTraceMultiAABB(List<AxisAlignedBB> boxes, BlockPos pos, Vec3d start, Vec3d end) {
         List<RayTraceResult> results = new ArrayList<>();
 
         double x = pos.getX();
@@ -24,8 +24,8 @@ public final class RayTraceHelper {
         Vec3d a = start.subtract(x, y, z);
         Vec3d b = end.subtract(x, y, z);
 
-        for (AxisAlignedBB aabb : aabbList) {
-            RayTraceResult result = aabb.calculateIntercept(a, b);
+        for (AxisAlignedBB box : boxes) {
+            RayTraceResult result = box.calculateIntercept(a, b);
             if (result != null) {
                 Vec3d vec = result.hitVec.addVector(x, y, z);
                 results.add(new RayTraceResult(vec, result.sideHit, pos));
