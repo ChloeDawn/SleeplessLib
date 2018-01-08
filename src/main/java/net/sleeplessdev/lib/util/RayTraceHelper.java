@@ -6,8 +6,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class RayTraceHelper {
 
@@ -15,29 +15,30 @@ public final class RayTraceHelper {
 
     @Nullable
     public static RayTraceResult rayTraceMultiAABB(List<AxisAlignedBB> aabbList, BlockPos pos, Vec3d start, Vec3d end) {
-        List<RayTraceResult> list = aabbList.stream().map(aabb -> {
-            double x = pos.getX(), y = pos.getY(), z = pos.getZ();
-            RayTraceResult result = aabb.calculateIntercept(
-                    start.subtract(x, y, z),
-                    end.subtract(x, y, z)
-            );
+        List<RayTraceResult> results = new ArrayList<>();
+
+        double x = pos.getX();
+        double y = pos.getY();
+        double z = pos.getZ();
+
+        Vec3d a = start.subtract(x, y, z);
+        Vec3d b = end.subtract(x, y, z);
+
+        for (AxisAlignedBB aabb : aabbList) {
+            RayTraceResult result = aabb.calculateIntercept(a, b);
             if (result != null) {
-                Vec3d hitVec = result.hitVec.addVector(x, y, z);
-                return new RayTraceResult(hitVec, result.sideHit, pos);
+                Vec3d vec = result.hitVec.addVector(x, y, z);
+                results.add(new RayTraceResult(vec, result.sideHit, pos));
             }
-            return null;
-        }).collect(Collectors.toList());
+        }
 
         RayTraceResult returnResult = null;
         double sqrDis = 0.0D;
 
-        for (RayTraceResult resultAt : list) {
-            if (resultAt == null)
-                continue;
-
-            double newSqrDis = resultAt.hitVec.squareDistanceTo(end);
+        for (RayTraceResult result : results) {
+            double newSqrDis = result.hitVec.squareDistanceTo(end);
             if (newSqrDis > sqrDis) {
-                returnResult = resultAt;
+                returnResult = result;
                 sqrDis = newSqrDis;
             }
         }
