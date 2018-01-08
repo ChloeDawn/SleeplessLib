@@ -35,6 +35,18 @@ public final class SerializableBlockPos implements ISerializable {
         return pos.toImmutable();
     }
 
+    public int getX() {
+        return pos.getX();
+    }
+
+    public int getY() {
+        return pos.getY();
+    }
+
+    public int getZ() {
+        return pos.getZ();
+    }
+
     public SerializableBlockPos setPos(Vec3i vec) {
         pos.setPos(vec);
         return this;
