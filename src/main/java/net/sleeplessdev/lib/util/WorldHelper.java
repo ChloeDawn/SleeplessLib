@@ -17,20 +17,7 @@ public final class WorldHelper {
 
     @SuppressWarnings("unchecked")
     public static <T extends TileEntity> Optional<T> getBlockEntity(IBlockAccess world, BlockPos pos, Class<T> clazz) {
-        TileEntity tile = world.getTileEntity(pos);
-        if (tile != null && clazz.isAssignableFrom(tile.getClass())) {
-            return Optional.of((T) tile);
-        }
-        return Optional.empty();
-    }
-
-    public static Optional<TileEntity> getBlockEntity(World world, BlockPos pos) {
-        return getBlockEntity(world, pos, TileEntity.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends TileEntity> Optional<T> getBlockEntity(World world, BlockPos pos, Class<T> clazz) {
-        if (isBlockLoaded(world, pos)) {
+        if (!(world instanceof World) || isBlockLoaded ((World) world, pos)) {
             TileEntity tile = world.getTileEntity(pos);
             if (tile != null && clazz.isAssignableFrom(tile.getClass())) {
                 return Optional.of((T) tile);
