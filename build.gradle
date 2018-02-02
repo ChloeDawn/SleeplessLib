@@ -15,7 +15,7 @@ def mcfVersion = '1.12.2-14.23.1.2583'
 def mcpMappings = 'snapshot_20180104'
 
 version = "1.12-$libVersion"
-group = 'net.sleepless.lib'
+group = 'net.sleeplessdev.lib'
 archivesBaseName = 'SleeplessLib'
 sourceCompatibility = 1.8
 
