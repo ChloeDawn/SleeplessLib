@@ -1,19 +1,31 @@
 package net.sleeplessdev.lib.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.sleeplessdev.lib.util.BlockMaterial;
 import net.sleeplessdev.lib.util.ColorVariant;
+import net.sleeplessdev.lib.util.DomainHelper;
+import net.sleeplessdev.lib.util.RayTraceHelper;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleBlock extends Block {
+public abstract class SimpleBlock extends Block {
+
+    private String name;
+
+    private boolean fullBlock = true;
+    private boolean opaqueBlock = true;
 
     public SimpleBlock(BlockMaterial material, ColorVariant color) {
         super(material.getMaterial(), color.getMapColor());
@@ -27,7 +39,14 @@ public class SimpleBlock extends Block {
         setHardness(material.getHardness());
         setResistance(material.getResistance());
         setSoundType(material.getSound());
+    }
 
+    public final void setFullBlock(boolean fullBlock) {
+        this.fullBlock = fullBlock;
+    }
+
+    public final void setOpaqueBlock(boolean opaqueBlock) {
+        this.opaqueBlock = opaqueBlock;
     }
 
     @Override
@@ -37,26 +56,71 @@ public class SimpleBlock extends Block {
 
     @Override
     @Deprecated
-    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> boxes, Entity entity, boolean isActualState) {
-        List<AxisAlignedBB> collectedBoxes = new ArrayList<>();
-        getCollisionBoxes(collectedBoxes, state, world, pos);
-        for (AxisAlignedBB box : collectedBoxes) {
-            addCollisionBoxToList(pos, entityBox, boxes, box);
+    public boolean isFullCube(IBlockState state) {
+        return fullBlock;
+    }
+
+    @Override
+    @Deprecated
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+        List<AxisAlignedBB> boxes = new ArrayList<>();
+        getCollisionBoxes(state, world, pos, boxes);
+        return !boxes.isEmpty() ? boxes.get(0) : FULL_BLOCK_AABB;
+    }
+
+    @Override
+    @Deprecated
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
+        return fullBlock ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
+    }
+
+    @Override
+    @Deprecated
+    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity, boolean isActualState) {
+        List<AxisAlignedBB> boxes = new ArrayList<>();
+        getCollisionBoxes(state, world, pos, boxes);
+        for (AxisAlignedBB box : boxes) {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, box);
         }
     }
 
-    public void getCollisionBoxes(List<AxisAlignedBB> boxes, IBlockState state, World world, BlockPos pos) {
-        boxes.add(state.getBoundingBox(world, pos));
+    @Override
+    @Deprecated
+    public boolean isOpaqueCube(IBlockState state) {
+        return opaqueBlock;
+    }
+
+    @Override
+    @Deprecated
+    @Nullable
+    public RayTraceResult collisionRayTrace(IBlockState state, World world, BlockPos pos, Vec3d start, Vec3d end) {
+        List<AxisAlignedBB> boxes = new ArrayList<>();
+        getCollisionBoxes(state, world, pos, boxes);
+
+        if (boxes.size() <= 1) {
+            AxisAlignedBB box = !boxes.isEmpty() ? boxes.get(0) : Block.FULL_BLOCK_AABB;
+            return rayTrace(pos, start, end, box);
+        }
+
+        return RayTraceHelper.rayTraceMultiAABB(boxes, pos, start, end);
+    }
+
+    @Override
+    public final Block setUnlocalizedName(String name) {
+        return super.setUnlocalizedName(DomainHelper.getActiveModId() + "." + name);
     }
 
     @Override // TODO Remove in 1.13
     public String getUnlocalizedName() {
-        return super.getUnlocalizedName().replace("tile.", "block.");
+        if (name == null) {
+            name = super.getUnlocalizedName()
+                    .replace("tile.", "block.");
+        }
+        return name;
     }
 
-    @Override
-    public BlockStateContainer getBlockState() {
-        return super.getBlockState();
+    public void getCollisionBoxes(IBlockState state, IBlockAccess world, BlockPos pos, List<AxisAlignedBB> boxes) {
+        boxes.add(FULL_BLOCK_AABB);
     }
 
 }
