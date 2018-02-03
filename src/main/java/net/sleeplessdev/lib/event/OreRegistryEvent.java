@@ -39,10 +39,12 @@ public final class OreRegistryEvent extends Event implements IContextSetter {
     protected OreRegistryEvent() {}
 
     protected void construct() {
-        for (Entry<Wrapper<ItemStack>, String> entry : ores.entries()) {
+        for (Entry<Wrapper<ItemStack>, Collection<String>> entry : ores.asMap().entrySet()) {
             ItemStack stack = entry.getKey().get();
             if (stack != null && !stack.isEmpty()) {
-                OreDictionary.registerOre(entry.getValue(), stack);
+                for (String ore : entry.getValue()) {
+                    OreDictionary.registerOre(ore, stack);
+                }
             }
         }
     }
