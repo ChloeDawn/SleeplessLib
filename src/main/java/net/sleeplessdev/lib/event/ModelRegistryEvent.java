@@ -10,7 +10,8 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.IContextSetter;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.Validate;
+
+import java.util.Objects;
 
 public final class ModelRegistryEvent extends Event implements IContextSetter {
 
@@ -18,7 +19,7 @@ public final class ModelRegistryEvent extends Event implements IContextSetter {
 
     @SideOnly(Side.CLIENT)
     public void register(Item item, int meta, ModelResourceLocation mrl) {
-        Validate.notNull(item.getRegistryName());
+        Objects.requireNonNull(item.getRegistryName());
         ModelLoader.setCustomModelResourceLocation(item, meta, mrl);
     }
 
@@ -29,13 +30,13 @@ public final class ModelRegistryEvent extends Event implements IContextSetter {
 
     @SideOnly(Side.CLIENT)
     public void register(Item item, int meta, String variant) {
-        Validate.notNull(item.getRegistryName());
+        Objects.requireNonNull(item.getRegistryName());
         register(item, meta, new ModelResourceLocation(item.getRegistryName(), variant));
     }
 
     @SideOnly(Side.CLIENT)
     public void register(Item item, String variant) {
-        Validate.notNull(item.getRegistryName());
+        Objects.requireNonNull(item.getRegistryName());
         register(item, 0, new ModelResourceLocation(item.getRegistryName(), variant));
     }
 
@@ -60,13 +61,13 @@ public final class ModelRegistryEvent extends Event implements IContextSetter {
 
     @SideOnly(Side.CLIENT)
     public void register(Item item, ItemMeshDefinition meshDefinition) {
-        Validate.notNull(item.getRegistryName());
+        Objects.requireNonNull(item.getRegistryName());
         ModelLoader.setCustomMeshDefinition(item, meshDefinition);
     }
 
     @SideOnly(Side.CLIENT)
     public void register(Block block, IStateMapper mapper) {
-        Validate.notNull(block.getRegistryName());
+        Objects.requireNonNull(block.getRegistryName());
         ModelLoader.setCustomStateMapper(block, mapper);
     }
 

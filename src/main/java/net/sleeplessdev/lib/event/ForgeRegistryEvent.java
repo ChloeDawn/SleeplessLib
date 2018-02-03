@@ -7,9 +7,9 @@ import net.minecraftforge.fml.common.eventhandler.IContextSetter;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.sleeplessdev.lib.util.DomainHelper;
-import org.apache.commons.lang3.Validate;
 
 import java.util.Collection;
+import java.util.Objects;
 
 class ForgeRegistryEvent<V extends IForgeRegistryEntry<V>> extends Event implements IContextSetter {
 
@@ -20,7 +20,7 @@ class ForgeRegistryEvent<V extends IForgeRegistryEntry<V>> extends Event impleme
     }
 
     public void register(V entry) {
-        Validate.notNull(entry.getRegistryName());
+        Objects.requireNonNull(entry.getRegistryName());
         registry.register(entry);
     }
 
