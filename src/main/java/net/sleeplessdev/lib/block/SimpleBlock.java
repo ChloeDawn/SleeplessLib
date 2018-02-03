@@ -62,14 +62,6 @@ public abstract class SimpleBlock extends Block {
 
     @Override
     @Deprecated
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
-        List<AxisAlignedBB> boxes = new ArrayList<>();
-        getCollisionBoxes(state, world, pos, boxes);
-        return !boxes.isEmpty() ? boxes.get(0) : FULL_BLOCK_AABB;
-    }
-
-    @Override
-    @Deprecated
     public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face) {
         return fullBlock ? BlockFaceShape.SOLID : BlockFaceShape.UNDEFINED;
     }
@@ -120,7 +112,7 @@ public abstract class SimpleBlock extends Block {
     }
 
     public void getCollisionBoxes(IBlockState state, IBlockAccess world, BlockPos pos, List<AxisAlignedBB> boxes) {
-        boxes.add(FULL_BLOCK_AABB);
+        boxes.add(state.getBoundingBox(world, pos));
     }
 
 }
