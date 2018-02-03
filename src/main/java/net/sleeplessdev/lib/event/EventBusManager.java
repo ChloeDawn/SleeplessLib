@@ -31,6 +31,10 @@ final class EventBusManager {
     @SubscribeEvent
     protected static void onBiomeRegistry(RegistryEvent.Register<Biome> event) {
         MinecraftForge.EVENT_BUS.post(new ItemRegistryEvent.Post(ForgeRegistries.ITEMS));
+
+        OreRegistryEvent oreRegistryEvent = new OreRegistryEvent();
+        MinecraftForge.EVENT_BUS.post(oreRegistryEvent);
+        oreRegistryEvent.construct();
     }
 
     @SubscribeEvent
