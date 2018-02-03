@@ -1,7 +1,7 @@
-package net.sleeplessdev.lib.util.serializable;
+package net.sleeplessdev.lib.serializable;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.sleeplessdev.lib.util.ColorVariant;
+import net.sleeplessdev.lib.base.ColorVariant;
 
 public final class SerializableColor implements ISerializable {
 

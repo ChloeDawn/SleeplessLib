@@ -1,4 +1,4 @@
-package net.sleeplessdev.lib.util;
+package net.sleeplessdev.lib.world;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -7,9 +7,9 @@ import net.minecraft.world.World;
 
 import java.util.Optional;
 
-public final class WorldHelper {
+public final class Worlds {
 
-    private WorldHelper() {}
+    private Worlds() {}
 
     public static Optional<TileEntity> getBlockEntity(IBlockAccess world, BlockPos pos) {
         return getBlockEntity(world, pos, TileEntity.class);

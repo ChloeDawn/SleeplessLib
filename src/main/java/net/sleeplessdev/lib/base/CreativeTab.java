@@ -1,4 +1,4 @@
-package net.sleeplessdev.lib.util;
+package net.sleeplessdev.lib.base;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -19,7 +19,7 @@ public class CreativeTab extends CreativeTabs {
     }
 
     public CreativeTab(Supplier<ItemStack> icon) {
-        this(DomainHelper.getActiveModId(), icon);
+        this(ModContainers.getActiveModId(), icon);
     }
 
     @Override

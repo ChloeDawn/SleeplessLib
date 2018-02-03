@@ -10,8 +10,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.sleeplessdev.lib.util.capability.CapabilityStorage;
-import net.sleeplessdev.lib.util.serializable.SerializerStorage;
+import net.sleeplessdev.lib.capability.CapabilityStorage;
+import net.sleeplessdev.lib.serializable.SerializerStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

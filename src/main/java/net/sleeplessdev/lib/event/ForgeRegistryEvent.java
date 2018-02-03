@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.IContextSetter;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
-import net.sleeplessdev.lib.util.DomainHelper;
+import net.sleeplessdev.lib.base.ModContainers;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -31,7 +31,7 @@ class ForgeRegistryEvent<V extends IForgeRegistryEntry<V>> extends Event impleme
     }
 
     public void register(V entry, String name) {
-        register(entry, DomainHelper.applyActiveDomain(name));
+        register(entry, ModContainers.applyActiveDomain(name));
     }
 
     public void registerAll(V... entries) {

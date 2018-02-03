@@ -11,10 +11,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.sleeplessdev.lib.util.BlockMaterial;
-import net.sleeplessdev.lib.util.ColorVariant;
-import net.sleeplessdev.lib.util.DomainHelper;
-import net.sleeplessdev.lib.util.RayTraceHelper;
+import net.sleeplessdev.lib.base.BlockMaterial;
+import net.sleeplessdev.lib.base.ColorVariant;
+import net.sleeplessdev.lib.base.ModContainers;
+import net.sleeplessdev.lib.math.RayTracing;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -94,12 +94,12 @@ public abstract class SimpleBlock extends Block {
             return rayTrace(pos, start, end, box);
         }
 
-        return RayTraceHelper.rayTraceMultiAABB(boxes, pos, start, end).orElse(null);
+        return RayTracing.rayTraceMultiAABB(boxes, pos, start, end).orElse(null);
     }
 
     @Override
     public final Block setUnlocalizedName(String name) {
-        return super.setUnlocalizedName(DomainHelper.getActiveModId() + "." + name);
+        return super.setUnlocalizedName(ModContainers.getActiveModId() + "." + name);
     }
 
     @Override // TODO Remove in 1.13

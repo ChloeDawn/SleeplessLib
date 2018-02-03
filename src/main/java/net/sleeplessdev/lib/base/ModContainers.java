@@ -1,4 +1,4 @@
-package net.sleeplessdev.lib.util;
+package net.sleeplessdev.lib.base;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
@@ -7,9 +7,9 @@ import net.sleeplessdev.lib.SleeplessLib;
 
 import java.util.Optional;
 
-public final class DomainHelper {
+public final class ModContainers {
 
-    private DomainHelper() {}
+    private ModContainers() {}
 
     public static Optional<ModContainer> getActiveContainer() {
         return Optional.ofNullable(Loader.instance().activeModContainer());

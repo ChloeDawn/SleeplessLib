@@ -1,4 +1,4 @@
-package net.sleeplessdev.lib.util;
+package net.sleeplessdev.lib.base;
 
 import net.minecraft.block.material.MapColor;
 import net.minecraft.item.EnumDyeColor;

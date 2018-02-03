@@ -1,4 +1,4 @@
-package net.sleeplessdev.lib.util.serializable;
+package net.sleeplessdev.lib.serializable;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;

@@ -1,4 +1,4 @@
-package net.sleeplessdev.lib.util;
+package net.sleeplessdev.lib.math;
 
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public final class RayTraceHelper {
+public final class RayTracing {
 
-    private RayTraceHelper() {}
+    private RayTracing() {}
 
     public static Optional<RayTraceResult> rayTraceMultiAABB(List<AxisAlignedBB> boxes, BlockPos pos, Vec3d start, Vec3d end) {
         List<RayTraceResult> results = new ArrayList<>();

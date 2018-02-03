@@ -1,4 +1,4 @@
-package net.sleeplessdev.lib.util;
+package net.sleeplessdev.lib.base;
 
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
