@@ -94,7 +94,7 @@ public abstract class SimpleBlock extends Block {
             return rayTrace(pos, start, end, box);
         }
 
-        return RayTraceHelper.rayTraceMultiAABB(boxes, pos, start, end);
+        return RayTraceHelper.rayTraceMultiAABB(boxes, pos, start, end).orElse(null);
     }
 
     @Override

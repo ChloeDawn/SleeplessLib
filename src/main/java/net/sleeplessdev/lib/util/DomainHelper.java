@@ -5,20 +5,18 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.sleeplessdev.lib.SleeplessLib;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 public final class DomainHelper {
 
     private DomainHelper() {}
 
-    @Nullable
-    public static ModContainer getActiveContainer() {
-        return Loader.instance().activeModContainer();
+    public static Optional<ModContainer> getActiveContainer() {
+        return Optional.ofNullable(Loader.instance().activeModContainer());
     }
 
     public static String getActiveModId() {
-        ModContainer c = getActiveContainer();
-        if (c != null) return c.getModId();
+        getActiveContainer().ifPresent(ModContainer::getModId);
         new IllegalStateException(
                 "Cannot retrieve modid from a null mod container!"
         ).printStackTrace();

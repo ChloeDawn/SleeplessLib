@@ -5,16 +5,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public final class RayTraceHelper {
 
     private RayTraceHelper() {}
 
-    @Nullable
-    public static RayTraceResult rayTraceMultiAABB(List<AxisAlignedBB> boxes, BlockPos pos, Vec3d start, Vec3d end) {
+    public static Optional<RayTraceResult> rayTraceMultiAABB(List<AxisAlignedBB> boxes, BlockPos pos, Vec3d start, Vec3d end) {
         List<RayTraceResult> results = new ArrayList<>();
 
         double x = pos.getX();
@@ -43,7 +42,7 @@ public final class RayTraceHelper {
             }
         }
 
-        return returnResult;
+        return Optional.ofNullable(returnResult);
     }
 
 }
