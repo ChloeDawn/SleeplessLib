@@ -4,6 +4,7 @@ import com.google.common.base.Equivalence;
 import com.google.common.base.Equivalence.Wrapper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -59,15 +60,35 @@ public final class OreRegistryEvent extends Event implements IContextSetter {
         register(STACK_EQV.wrap(stack), ore);
     }
 
+    public void register(Item item, String ore) {
+        register(STACK_EQV.wrap(new ItemStack(item)), ore);
+    }
+
+    public void register(Item item, int meta, String ore) {
+        register(STACK_EQV.wrap(new ItemStack(item, 1, meta)), ore);
+    }
+
     public void registerAll(ItemStack stack, String... ores) {
         for (String ore : ores) {
-            register(STACK_EQV.wrap(stack), ore);
+            register(stack, ore);
+        }
+    }
+
+    public void registerAll(Item item, String... ores) {
+        for (String ore : ores) {
+            register(new ItemStack(item), ore);
         }
     }
 
     public void registerAll(ItemStack stack, Collection<String> ores) {
         for (String ore : ores) {
-            register(STACK_EQV.wrap(stack), ore);
+            register(stack, ore);
+        }
+    }
+
+    public void registerAll(Item item, Collection<String> ores) {
+        for (String ore : ores) {
+            register(new ItemStack(item), ore);
         }
     }
 
