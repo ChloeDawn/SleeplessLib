@@ -1,7 +1,11 @@
 package net.sleeplessdev.lib.event;
 
+import com.google.common.base.Equivalence;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -32,9 +36,9 @@ final class EventBusManager {
     protected static void onBiomeRegistry(RegistryEvent.Register<Biome> event) {
         MinecraftForge.EVENT_BUS.post(new ItemRegistryEvent.Post(ForgeRegistries.ITEMS));
 
-        OreRegistryEvent oreRegistryEvent = new OreRegistryEvent();
-        MinecraftForge.EVENT_BUS.post(oreRegistryEvent);
-        oreRegistryEvent.construct();
+        Multimap<Equivalence.Wrapper<ItemStack>, String> ores = ArrayListMultimap.create();
+        MinecraftForge.EVENT_BUS.post(new OreRegistryEvent(ores));
+        OreRegistryEvent.construct(ores);
     }
 
     @SubscribeEvent

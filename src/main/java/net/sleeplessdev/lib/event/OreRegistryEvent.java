@@ -2,7 +2,6 @@ package net.sleeplessdev.lib.event;
 
 import com.google.common.base.Equivalence;
 import com.google.common.base.Equivalence.Wrapper;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -35,11 +34,13 @@ public final class OreRegistryEvent extends Event implements IContextSetter {
         }
     };
 
-    private final Multimap<Wrapper<ItemStack>, String> ores = ArrayListMultimap.create();
+    private final Multimap<Wrapper<ItemStack>, String> ores;
 
-    protected OreRegistryEvent() {}
+    protected OreRegistryEvent(Multimap<Wrapper<ItemStack>, String> ores) {
+        this.ores = ores;
+    }
 
-    protected void construct() {
+    protected static void construct(Multimap<Wrapper<ItemStack>, String> ores) {
         for (Entry<Wrapper<ItemStack>, Collection<String>> entry : ores.asMap().entrySet()) {
             ItemStack stack = entry.getKey().get();
             if (stack != null && !stack.isEmpty()) {
