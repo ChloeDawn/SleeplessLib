@@ -37,14 +37,4 @@ public final class ColorRegistryEvent extends Event {
         itemColors.registerItemColorHandler(provider, item);
     }
 
-    @SideOnly(Side.CLIENT)
-    public void register(ColorProvider provider, Block block) {
-        register(provider, block, Item.getItemFromBlock(block));
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void register(ColorProvider provider, Item item) {
-        register(provider, Block.getBlockFromItem(item), item);
-    }
-
 }
