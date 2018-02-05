@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -56,6 +57,65 @@ public final class ModelRegistryEvent extends Event implements IContextSetter {
     public void registerAll(Item item, String... variants) {
         for (int i = 0; i < variants.length; i++) {
             register(item, i, variants[i]);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void register(Block block, int meta, ModelResourceLocation mrl) {
+        Item item = Item.getItemFromBlock(block);
+        if (item != Items.AIR) {
+            Objects.requireNonNull(item.getRegistryName());
+            ModelLoader.setCustomModelResourceLocation(item, meta, mrl);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void register(Block block, ModelResourceLocation mrl) {
+        Item item = Item.getItemFromBlock(block);
+        if (item != Items.AIR) {
+            register(item, 0, mrl);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void register(Block block, int meta, String variant) {
+        Item item = Item.getItemFromBlock(block);
+        if (item != Items.AIR) {
+            Objects.requireNonNull(item.getRegistryName());
+            register(item, meta, new ModelResourceLocation(item.getRegistryName(), variant));
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void register(Block block, String variant) {
+        Item item = Item.getItemFromBlock(block);
+        if (item != Items.AIR) {
+            Objects.requireNonNull(item.getRegistryName());
+            register(item, 0, new ModelResourceLocation(item.getRegistryName(), variant));
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void register(Block block) {
+        Item item = Item.getItemFromBlock(block);
+        if (item != Items.AIR) {
+            register(item, "normal");
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerAll(Block block, ModelResourceLocation... mrls) {
+        Item item = Item.getItemFromBlock(block);
+        if (item != Items.AIR) {
+            registerAll(item, mrls);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerAll(Block block, String... variants) {
+        Item item = Item.getItemFromBlock(block);
+        if (item != Items.AIR) {
+            registerAll(item, variants);
         }
     }
 
