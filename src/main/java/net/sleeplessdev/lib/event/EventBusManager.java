@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -45,6 +46,12 @@ final class EventBusManager {
     @SideOnly(Side.CLIENT)
     protected static void onModelRegistry(net.minecraftforge.client.event.ModelRegistryEvent event) {
         MinecraftForge.EVENT_BUS.post(new net.sleeplessdev.lib.event.ModelRegistryEvent(event));
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    protected static void onColorHandlerRegistry(ColorHandlerEvent.Item event) {
+        MinecraftForge.EVENT_BUS.post(new ColorRegistryEvent(event.getBlockColors(), event.getItemColors()));
     }
 
 }
