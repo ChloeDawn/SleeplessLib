@@ -25,9 +25,7 @@ public final class ItemRegistryEvent extends ForgeRegistryEvent<Item> {
     @Override
     public void register(Item entry, ResourceLocation name) {
         if ("item.null".equals(entry.getUnlocalizedName())) {
-            String modid = name.getResourceDomain();
-            String path = name.getResourcePath();
-            entry.setUnlocalizedName(modid + "." + path);
+            entry.setUnlocalizedName(name.getResourcePath());
         }
         super.register(entry, name);
     }

@@ -13,9 +13,7 @@ public final class BlockRegistryEvent extends ForgeRegistryEvent<Block> {
     @Override
     public void register(Block entry, ResourceLocation name) {
         if ("block.null".equals(entry.getUnlocalizedName())) {
-            String modid = name.getResourceDomain();
-            String path = name.getResourcePath();
-            entry.setUnlocalizedName(modid + "." + path);
+            entry.setUnlocalizedName(name.getResourcePath());
         }
         super.register(entry, name);
     }
