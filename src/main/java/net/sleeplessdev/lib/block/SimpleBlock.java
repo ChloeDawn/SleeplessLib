@@ -22,8 +22,6 @@ import java.util.List;
 
 public abstract class SimpleBlock extends Block {
 
-    private String name;
-
     private boolean fullBlock = true;
     private boolean opaqueBlock = true;
 
@@ -104,11 +102,7 @@ public abstract class SimpleBlock extends Block {
 
     @Override // TODO Remove in 1.13
     public String getUnlocalizedName() {
-        if (name == null) {
-            name = super.getUnlocalizedName()
-                    .replace("tile.", "block.");
-        }
-        return name;
+        return super.getUnlocalizedName().replace("tile.", "block.");
     }
 
     public void getCollisionBoxes(IBlockState state, IBlockAccess world, BlockPos pos, List<AxisAlignedBB> boxes) {
