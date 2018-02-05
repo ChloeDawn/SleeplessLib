@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.client.color.ColorProvider;
 
 public final class ColorRegistryEvent extends Event {
@@ -19,23 +21,28 @@ public final class ColorRegistryEvent extends Event {
         this.itemColors = itemColors;
     }
 
+    @SideOnly(Side.CLIENT)
     public void register(IItemColor color, Item... items) {
         itemColors.registerItemColorHandler(color, items);
     }
 
+    @SideOnly(Side.CLIENT)
     public void register(IBlockColor color, Block... blocks) {
         blockColors.registerBlockColorHandler(color, blocks);
     }
 
+    @SideOnly(Side.CLIENT)
     public void register(ColorProvider provider, Block block, Item item) {
         blockColors.registerBlockColorHandler(provider, block);
         itemColors.registerItemColorHandler(provider, item);
     }
 
+    @SideOnly(Side.CLIENT)
     public void register(ColorProvider provider, Block block) {
         register(provider, block, Item.getItemFromBlock(block));
     }
 
+    @SideOnly(Side.CLIENT)
     public void register(ColorProvider provider, Item item) {
         register(provider, Block.getBlockFromItem(item), item);
     }
