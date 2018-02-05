@@ -3,7 +3,6 @@ package net.sleeplessdev.lib.base;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import net.sleeplessdev.lib.SleeplessLib;
 
 import java.util.Optional;
 
@@ -16,11 +15,9 @@ public final class ModContainers {
     }
 
     public static String getActiveModId() {
-        getActiveContainer().ifPresent(ModContainer::getModId);
-        new IllegalStateException(
-                "Cannot retrieve modid from a null mod container!"
-        ).printStackTrace();
-        return SleeplessLib.ID;
+        return getActiveContainer().map(ModContainer::getModId).orElseThrow(
+                () -> new IllegalStateException("Cannot retrieve modid from a null mod container!")
+        );
     }
 
     public static ResourceLocation applyActiveDomain(String path) {
