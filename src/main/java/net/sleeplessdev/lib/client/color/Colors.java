@@ -46,12 +46,12 @@ public final class Colors {
     }
 
     public static int getBiomeColor() {
-        if (Client.getWorld().isPresent() && Client.getPlayer().isPresent()) {
-            World world = Client.getWorld().get();
-            BlockPos pos = new BlockPos(Client.getPlayer().get());
-            return BiomeColorHelper.getGrassColorAtPos(world, pos);
-        }
-        return ColorizerGrass.getGrassColor(0.5D, 1.0D);
+        return Client.getPlayer()
+                .map(player -> {
+                    World world = player.world;
+                    BlockPos pos = new BlockPos(player);
+                    return getBiomeColor(world, pos);
+                }).orElse(ColorizerGrass.getGrassColor(0.5D, 1.0D));
     }
 
 }
