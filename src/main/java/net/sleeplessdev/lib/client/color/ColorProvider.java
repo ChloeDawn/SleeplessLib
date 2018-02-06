@@ -9,16 +9,22 @@ import net.minecraft.world.IBlockAccess;
 
 import javax.annotation.Nullable;
 
-public interface ColorProvider extends IBlockColor, IItemColor {
+public abstract class ColorProvider implements IBlockColor, IItemColor {
 
     @Override
-    default int colorMultiplier(IBlockState state, @Nullable IBlockAccess world, @Nullable BlockPos pos, int tintIndex) {
-        return 0xFFFFFFFF;
+    public final int colorMultiplier(IBlockState state, @Nullable IBlockAccess world, @Nullable BlockPos pos, int tintIndex) {
+        return world != null && pos != null ? getColor(state, world, pos, tintIndex) : getColor(tintIndex);
     }
 
     @Override
-    default int colorMultiplier(ItemStack stack, int tintIndex) {
-        return 0xFFFFFFFF;
+    public final int colorMultiplier(ItemStack stack, int tintIndex) {
+        return !stack.isEmpty() ? getColor(stack, tintIndex) : getColor(tintIndex);
     }
+
+    public abstract int getColor(IBlockState state, IBlockAccess world, BlockPos pos, int tintIndex);
+
+    public abstract int getColor(ItemStack stack, int tintIndex);
+
+    public abstract int getColor(int tintIndex);
 
 }
