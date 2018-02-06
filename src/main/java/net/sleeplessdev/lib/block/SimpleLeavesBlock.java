@@ -4,6 +4,7 @@ import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -72,6 +73,11 @@ public abstract class SimpleLeavesBlock extends BlockLeaves {
         int checkDecay = (state.getValue(CHECK_DECAY) ? 1 : 0) & 1;
         int decayable = (state.getValue(DECAYABLE) ? 1 : 0) << 1;
         return checkDecay | decayable;
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, CHECK_DECAY, DECAYABLE);
     }
 
     @Override
