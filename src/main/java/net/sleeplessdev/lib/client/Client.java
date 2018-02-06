@@ -1,6 +1,8 @@
 package net.sleeplessdev.lib.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockRenderLayer;
@@ -50,5 +52,14 @@ public final class Client {
     public static boolean isFancyGraphics() {
         return Blocks.LEAVES.getBlockLayer() != BlockRenderLayer.SOLID;
     }
+
+    public static BlockColors getBlockColors() {
+        return Client.getInstance().getBlockColors();
+    }
+
+    public static ItemColors getItemColors() {
+        return Client.getInstance().getItemColors();
+    }
+
 
 }
