@@ -13,15 +13,11 @@ public interface ColorProvider extends IBlockColor, IItemColor {
 
     @Override
     default int colorMultiplier(IBlockState state, @Nullable IBlockAccess world, @Nullable BlockPos pos, int tintIndex) {
-        return getColorValue();
+        return 0;
     }
 
     @Override
     default int colorMultiplier(ItemStack stack, int tintIndex) {
-        return getColorValue();
-    }
-
-    default int getColorValue() {
         return 0;
     }
 
