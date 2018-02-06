@@ -4,6 +4,8 @@ import com.google.common.base.Equivalence;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.Biome;
@@ -17,8 +19,17 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.SleeplessLib;
 
+import java.util.Collection;
+import java.util.Map;
+
 @Mod.EventBusSubscriber(modid = SleeplessLib.ID)
 final class EventBusManager {
+
+    @SideOnly(Side.CLIENT)
+    private static Multimap<IItemColor, Item> itemColorMap = ArrayListMultimap.create();
+
+    @SideOnly(Side.CLIENT)
+    private static Multimap<IBlockColor, Block> blockColorMap = ArrayListMultimap.create();
 
     private EventBusManager() {}
 
@@ -46,12 +57,25 @@ final class EventBusManager {
     @SideOnly(Side.CLIENT)
     protected static void onModelRegistry(net.minecraftforge.client.event.ModelRegistryEvent event) {
         MinecraftForge.EVENT_BUS.post(new net.sleeplessdev.lib.event.ModelRegistryEvent(event));
+        MinecraftForge.EVENT_BUS.post(new ColorRegistryEvent(itemColorMap, blockColorMap));
     }
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
-    protected static void onColorHandlerRegistry(ColorHandlerEvent.Item event) {
-        MinecraftForge.EVENT_BUS.post(new ColorRegistryEvent(event.getBlockColors(), event.getItemColors()));
+    protected static void onItemColorHandler(ColorHandlerEvent.Item event) {
+        for (Map.Entry<IItemColor, Collection<Item>> entry : itemColorMap.asMap().entrySet()) {
+            Item[] items = entry.getValue().toArray(new Item[0]);
+            event.getItemColors().registerItemColorHandler(entry.getKey(), items);
+        }
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    protected static void onBlockColorHandler(ColorHandlerEvent.Block event) {
+        for (Map.Entry<IBlockColor, Collection<Block>> entry : blockColorMap.asMap().entrySet()) {
+            Block[] blocks = entry.getValue().toArray(new Block[0]);
+            event.getBlockColors().registerBlockColorHandler(entry.getKey(), blocks);
+        }
     }
 
 }

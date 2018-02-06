@@ -1,40 +1,44 @@
 package net.sleeplessdev.lib.event;
 
+import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.client.color.ColorProvider;
 
+import java.util.Arrays;
+
 public final class ColorRegistryEvent extends Event {
 
-    private final BlockColors blockColors;
-    private final ItemColors itemColors;
+    @SideOnly(Side.CLIENT)
+    private final Multimap<IItemColor, Item> itemColorMap;
 
-    protected ColorRegistryEvent(BlockColors blockColors, ItemColors itemColors) {
-        this.blockColors = blockColors;
-        this.itemColors = itemColors;
+    @SideOnly(Side.CLIENT)
+    private final Multimap<IBlockColor, Block> blockColorMap;
+
+    protected ColorRegistryEvent(Multimap<IItemColor, Item> itemColorMap, Multimap<IBlockColor, Block> blockColorMap) {
+        this.itemColorMap = itemColorMap;
+        this.blockColorMap = blockColorMap;
     }
 
     @SideOnly(Side.CLIENT)
     public void register(IItemColor color, Item... items) {
-        itemColors.registerItemColorHandler(color, items);
+        itemColorMap.putAll(color, Arrays.asList(items));
     }
 
     @SideOnly(Side.CLIENT)
     public void register(IBlockColor color, Block... blocks) {
-        blockColors.registerBlockColorHandler(color, blocks);
+        blockColorMap.putAll(color, Arrays.asList(blocks));
     }
 
     @SideOnly(Side.CLIENT)
     public void register(ColorProvider provider, Block block, Item item) {
-        blockColors.registerBlockColorHandler(provider, block);
-        itemColors.registerItemColorHandler(provider, item);
+        itemColorMap.put(provider, item);
+        blockColorMap.put(provider, block);
     }
 
 }
