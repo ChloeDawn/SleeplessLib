@@ -6,14 +6,21 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.base.BlockMaterial;
 import net.sleeplessdev.lib.base.ColorVariant;
+import net.sleeplessdev.lib.client.Client;
 
 import java.util.Collections;
 import java.util.List;
@@ -81,8 +88,24 @@ public abstract class SimpleLeavesBlock extends BlockLeaves {
     }
 
     @Override
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+        return getDefaultState().withProperty(CHECK_DECAY, false).withProperty(DECAYABLE, false);
+    }
+
+    @Override
     public Item getItemDropped(IBlockState state, Random rand, int fortune) {
         return Item.getItemFromBlock(this);
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return !Client.isFancyGraphics();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public BlockRenderLayer getBlockLayer() {
+        return Client.isFancyGraphics() ? BlockRenderLayer.CUTOUT_MIPPED : BlockRenderLayer.SOLID;
     }
 
     @Override
@@ -116,6 +139,12 @@ public abstract class SimpleLeavesBlock extends BlockLeaves {
             dropApple((World) world, pos, state, chance);
         }
         drops.addAll(captureDrops(false));
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        return (Client.isFancyGraphics() || world.getBlockState(pos.offset(side)).getBlock() != this)
+                && super.shouldSideBeRendered(state, world, pos, side);
     }
 
     @Override
