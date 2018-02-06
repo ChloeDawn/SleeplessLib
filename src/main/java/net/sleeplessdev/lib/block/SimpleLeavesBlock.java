@@ -143,8 +143,9 @@ public abstract class SimpleLeavesBlock extends BlockLeaves {
 
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-        return (Client.isFancyGraphics() || world.getBlockState(pos.offset(side)).getBlock() != this)
-                && super.shouldSideBeRendered(state, world, pos, side);
+        if (!Client.isFancyGraphics()) return super.shouldSideBeRendered(state, world, pos, side);
+        return world.getBlockState(pos.offset(side)).getBlock() == this
+                || super.shouldSideBeRendered(state, world, pos, side);
     }
 
     @Override
