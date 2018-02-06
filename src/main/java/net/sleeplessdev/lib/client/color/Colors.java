@@ -32,7 +32,7 @@ public final class Colors {
 
         @Override
         public int getColor(int tintIndex) {
-            return  ColorizerFoliage.getFoliageColorBasic();
+            return ColorizerFoliage.getFoliageColorBasic();
         }
     };
 
