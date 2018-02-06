@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -39,7 +40,7 @@ public interface ICustomSelectionBox {
      * @param pos   The current position of the block.
      * @return The render type to be used.
      */
-    SelectionRenderType getRenderType(IBlockState state, World world, BlockPos pos);
+    SelectionRenderType getRenderType(IBlockState state, IBlockAccess world, BlockPos pos);
 
     /**
      * Determines the minimum bounds of the selection box for {@link SelectionRenderType#SINGLE}
@@ -49,7 +50,7 @@ public interface ICustomSelectionBox {
      * @param pos   The current position of the block.
      * @return The minimum range for the selection box.
      */
-    default AxisAlignedBB getMinimumRange(IBlockState state, World world, BlockPos pos) {
+    default AxisAlignedBB getMinimumRange(IBlockState state, IBlockAccess world, BlockPos pos) {
         return new AxisAlignedBB(0.5D, 0.5D, 0.5D, 0.5D, 0.5D, 0.5D);
     }
 
