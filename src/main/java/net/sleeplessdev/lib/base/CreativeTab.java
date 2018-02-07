@@ -12,6 +12,8 @@ public class CreativeTab extends CreativeTabs {
     private final String label;
     private final Supplier<ItemStack> icon;
 
+    private boolean hasSearchBar;
+
     public CreativeTab(String label, Supplier<ItemStack> icon) {
         super("");
         this.label = label;
@@ -20,6 +22,11 @@ public class CreativeTab extends CreativeTabs {
 
     public CreativeTab(Supplier<ItemStack> icon) {
         this(ModContainers.getActiveModId(), icon);
+    }
+
+    public CreativeTab setHasSearchBar(boolean hasSearchBar) {
+        this.hasSearchBar = hasSearchBar;
+        return this;
     }
 
     @Override
@@ -32,6 +39,17 @@ public class CreativeTab extends CreativeTabs {
     @SideOnly(Side.CLIENT)
     public final ItemStack getTabIconItem() {
         return icon.get();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public String getBackgroundImageName() {
+        return hasSearchBar ? "item_search.png" : "items.png";
+    }
+
+    @Override
+    public boolean hasSearchBar() {
+        return hasSearchBar;
     }
 
 }
