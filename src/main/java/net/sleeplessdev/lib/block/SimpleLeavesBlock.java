@@ -1,5 +1,6 @@
 package net.sleeplessdev.lib.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.material.MapColor;
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.base.BlockMaterial;
 import net.sleeplessdev.lib.base.ColorVariant;
+import net.sleeplessdev.lib.base.ModContainers;
 import net.sleeplessdev.lib.client.Client;
 
 import java.util.Collections;
@@ -151,6 +153,16 @@ public abstract class SimpleLeavesBlock extends BlockLeaves {
     @Override
     public List<ItemStack> onSheared(ItemStack stack, IBlockAccess world, BlockPos pos, int fortune) {
         return Collections.singletonList(new ItemStack(this));
+    }
+
+    @Override
+    public final Block setUnlocalizedName(String name) {
+        return super.setUnlocalizedName(ModContainers.getActiveModId() + "." + name);
+    }
+
+    @Override // TODO Remove in 1.13
+    public String getUnlocalizedName() {
+        return super.getUnlocalizedName().replace("tile.", "block.");
     }
 
 }
