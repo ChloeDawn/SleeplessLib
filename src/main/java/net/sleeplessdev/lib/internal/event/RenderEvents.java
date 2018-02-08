@@ -14,6 +14,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.SleeplessLib;
+import net.sleeplessdev.lib.base.OrdinalFacing;
+import net.sleeplessdev.lib.block.SimpleOrdinalBlock;
 import net.sleeplessdev.lib.client.render.CustomSelectionBox;
 
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ final class RenderEvents {
                     boxes = Collections.singletonList(actualBox);
                 }
 
+                GlStateManager.pushMatrix();
                 GlStateManager.disableAlpha();
                 GlStateManager.enableBlend();
                 GlStateManager.tryBlendFuncSeparate(
@@ -55,6 +58,16 @@ final class RenderEvents {
                 GlStateManager.glLineWidth(2.0F);
                 GlStateManager.disableTexture2D();
                 GlStateManager.depthMask(false);
+
+                if (state.getPropertyKeys().contains(SimpleOrdinalBlock.FACING)) {
+                    OrdinalFacing facing = state.getValue(SimpleOrdinalBlock.FACING);
+                    if (!facing.isCardinal()) {
+                        GlStateManager.translate(-0.5D, -0.5D, -0.5D);
+                        GlStateManager.rotate(facing.getAngle(), 0.0F, 1.0F, 0.0F);
+                        GlStateManager.translate(0.5D, 0.5D, 0.5D);
+                    }
+                }
+
                 double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
                 double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
                 double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
@@ -68,6 +81,7 @@ final class RenderEvents {
                 GlStateManager.enableTexture2D();
                 GlStateManager.disableBlend();
                 GlStateManager.enableAlpha();
+                GlStateManager.popMatrix();
                 event.setCanceled(true);
             }
         }
