@@ -34,7 +34,7 @@ final class RenderEvents {
             IBlockState state = world.getBlockState(pos).getActualState(world, pos);
 
             if (state.getBlock() instanceof CustomSelectionBox) {
-                CustomSelectionBox icsb = ((CustomSelectionBox) state.getBlock());
+                CustomSelectionBox iface = ((CustomSelectionBox) state.getBlock());
                 EntityPlayer player = event.getPlayer();
 
                 List<AxisAlignedBB> boxes = new ArrayList<>();
@@ -42,8 +42,8 @@ final class RenderEvents {
                 state.addCollisionBoxToList(world, pos, entityBox, boxes, player, true);
 
                 if (boxes.isEmpty()) return;
-                if (icsb.getRenderType(state, world, pos) == CustomSelectionBox.RenderType.UNIFIED) {
-                    AxisAlignedBB actualBox = icsb.getMinimumRange(state, world, pos).offset(pos);
+                if (iface.getRenderType(state, world, pos) == CustomSelectionBox.RenderType.UNIFIED) {
+                    AxisAlignedBB actualBox = iface.getMinimumRange(state, world, pos).offset(pos);
                     for (AxisAlignedBB box : boxes) actualBox = actualBox.union(box);
                     boxes = Collections.singletonList(actualBox);
                 }
