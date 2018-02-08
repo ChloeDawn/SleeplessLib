@@ -44,6 +44,10 @@ public enum OrdinalFacing implements IStringSerializable {
         return cardinalEquivalent;
     }
 
+    public boolean isCardinal() {
+        return this == SOUTH || this == WEST || this == NORTH || this == EAST;
+    }
+
     public OrdinalFacing rotate90() {
         switch (this) {
             case NORTH:      return EAST;
