@@ -12,8 +12,8 @@ public class CreativeTab extends CreativeTabs {
     private final String label;
     private final Supplier<ItemStack> icon;
 
-    private boolean hasSearchBar;
-    private boolean showLabel;
+    private boolean hasSearchBar = false;
+    private boolean showLabel = true;
 
     public CreativeTab(String label, Supplier<ItemStack> icon) {
         super("");
