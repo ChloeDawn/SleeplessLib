@@ -1,4 +1,4 @@
-package net.sleeplessdev.lib.base;
+package net.sleeplessdev.lib.math;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
