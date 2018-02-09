@@ -7,7 +7,7 @@ import net.sleeplessdev.lib.math.BoundingBox;
 
 import java.util.List;
 
-public interface ExtendedBoundingBox {
+public interface ExtendedSelectionBox {
 
     List<BoundingBox> getBoundingBoxes(IBlockState state, IBlockAccess world, BlockPos pos);
 

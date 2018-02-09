@@ -3,8 +3,11 @@ package net.sleeplessdev.lib.internal.event;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -16,8 +19,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.SleeplessLib;
 import net.sleeplessdev.lib.base.OrdinalFacing;
-import net.sleeplessdev.lib.client.render.ExtendedBoundingBox;
-import net.sleeplessdev.lib.client.render.OrientableBoundingBox;
+import net.sleeplessdev.lib.client.render.CardinalSelectionBox;
+import net.sleeplessdev.lib.client.render.ExtendedSelectionBox;
+import net.sleeplessdev.lib.client.render.OrdinalSelectionBox;
 import net.sleeplessdev.lib.math.BoundingBox;
 
 import java.util.ArrayList;
@@ -39,11 +43,11 @@ final class RenderEvents {
         BlockPos pos = event.getTarget().getBlockPos();
         IBlockState state = world.getBlockState(pos);
 
-        if (!(state.getBlock() instanceof ExtendedBoundingBox)) return;
+        if (!(state.getBlock() instanceof ExtendedSelectionBox)) return;
 
         state = state.getActualState(world, pos);
 
-        ExtendedBoundingBox iface = (ExtendedBoundingBox) state.getBlock();
+        ExtendedSelectionBox iface = (ExtendedSelectionBox) state.getBlock();
 
         List<AxisAlignedBB> boxes = new ArrayList<>();
 
@@ -55,8 +59,8 @@ final class RenderEvents {
         GlStateManager.disableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(
-                GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA,
+                SourceFactor.ONE, DestFactor.ZERO);
         GlStateManager.glLineWidth(2.0F);
         GlStateManager.disableTexture2D();
         GlStateManager.depthMask(false);
@@ -67,14 +71,9 @@ final class RenderEvents {
 
         GlStateManager.translate(x + 0.5D, y + 0.5D, z + 0.5D);
 
-        if (!(iface instanceof OrientableBoundingBox)) {
-            for (BoundingBox box : iface.getBoundingBoxes(state, world, pos)) {
-                boxes.add(box.getDefault());
-            }
-        } else {
-            OrientableBoundingBox orientable = (OrientableBoundingBox) iface;
-            PropertyEnum<OrdinalFacing> property = orientable.getFacingProperty();
-            OrdinalFacing facing = state.getValue(property);
+        if (iface instanceof CardinalSelectionBox) {
+            CardinalSelectionBox cardinal = (CardinalSelectionBox) iface;
+            PropertyEnum<EnumFacing> property = cardinal.getFacingProperty();
 
             if (!state.getPropertyKeys().contains(property)) {
                 String p = property.toString();
@@ -82,12 +81,33 @@ final class RenderEvents {
                 throw new IllegalStateException("Could not locate " + p + " in " + s + "!");
             }
 
+            EnumFacing facing = state.getValue(property);
+
+            for (BoundingBox box : iface.getBoundingBoxes(state, world, pos)) {
+                boxes.add(box.get(facing));
+            }
+        } else if (iface instanceof OrdinalSelectionBox) {
+            OrdinalSelectionBox orientable = (OrdinalSelectionBox) iface;
+            PropertyEnum<OrdinalFacing> property = orientable.getFacingProperty();
+
+            if (!state.getPropertyKeys().contains(property)) {
+                String p = property.toString();
+                String s = state.toString();
+                throw new IllegalStateException("Could not locate " + p + " in " + s + "!");
+            }
+
+            OrdinalFacing facing = state.getValue(property);
+
             if (!facing.isCardinal()) {
                 GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
             }
 
             for (BoundingBox box : iface.getBoundingBoxes(state, world, pos)) {
                 boxes.add(box.get(facing.getCardinal()));
+            }
+        } else {
+            for (BoundingBox box : iface.getBoundingBoxes(state, world, pos)) {
+                boxes.add(box.getDefault());
             }
         }
 
