@@ -1,5 +1,6 @@
 package net.sleeplessdev.lib.internal.event;
 
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -15,76 +16,95 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.SleeplessLib;
 import net.sleeplessdev.lib.base.OrdinalFacing;
-import net.sleeplessdev.lib.block.SimpleOrdinalBlock;
-import net.sleeplessdev.lib.client.render.CustomSelectionBox;
+import net.sleeplessdev.lib.client.render.ExtendedBoundingBox;
+import net.sleeplessdev.lib.client.render.OrientableBoundingBox;
+import net.sleeplessdev.lib.math.BoundingBox;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = SleeplessLib.ID)
+@SideOnly(Side.CLIENT)
+@Mod.EventBusSubscriber(modid = SleeplessLib.ID, value = Side.CLIENT)
 final class RenderEvents {
 
+    private RenderEvents() {}
+
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
     protected static void onDrawBlockHighlight(DrawBlockHighlightEvent event) {
-        if (event.getTarget() != null && event.getTarget().typeOfHit == RayTraceResult.Type.BLOCK) {
-            World world = event.getPlayer().world;
-            BlockPos pos = event.getTarget().getBlockPos();
-            IBlockState state = world.getBlockState(pos).getActualState(world, pos);
+        if (event.getTarget() == null) return;
+        if (event.getTarget().typeOfHit != RayTraceResult.Type.BLOCK) return;
 
-            if (state.getBlock() instanceof CustomSelectionBox) {
-                CustomSelectionBox iface = ((CustomSelectionBox) state.getBlock());
-                EntityPlayer player = event.getPlayer();
+        EntityPlayer player = event.getPlayer();
+        World world = player.world;
+        BlockPos pos = event.getTarget().getBlockPos();
+        IBlockState state = world.getBlockState(pos);
 
-                List<AxisAlignedBB> boxes = new ArrayList<>();
-                AxisAlignedBB entityBox = player.getEntityBoundingBox().grow(6.0D);
-                state.addCollisionBoxToList(world, pos, entityBox, boxes, player, true);
+        if (!(state.getBlock() instanceof ExtendedBoundingBox)) return;
 
-                if (boxes.isEmpty()) return;
-                if (iface.getRenderType(state, world, pos) == CustomSelectionBox.RenderType.UNIFIED) {
-                    AxisAlignedBB actualBox = iface.getMinimumRange(state, world, pos).offset(pos);
-                    for (AxisAlignedBB box : boxes) actualBox = actualBox.union(box);
-                    boxes = Collections.singletonList(actualBox);
-                }
+        state = state.getActualState(world, pos);
 
-                GlStateManager.pushMatrix();
-                GlStateManager.disableAlpha();
-                GlStateManager.enableBlend();
-                GlStateManager.tryBlendFuncSeparate(
-                        GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                        GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO
-                );
-                GlStateManager.glLineWidth(2.0F);
-                GlStateManager.disableTexture2D();
-                GlStateManager.depthMask(false);
+        ExtendedBoundingBox iface = (ExtendedBoundingBox) state.getBlock();
 
-                if (state.getPropertyKeys().contains(SimpleOrdinalBlock.FACING)) {
-                    OrdinalFacing facing = state.getValue(SimpleOrdinalBlock.FACING);
-                    if (!facing.isCardinal()) {
-                        GlStateManager.translate(-0.5D, -0.5D, -0.5D);
-                        GlStateManager.rotate(facing.getAngle(), 0.0F, 1.0F, 0.0F);
-                        GlStateManager.translate(0.5D, 0.5D, 0.5D);
-                    }
-                }
+        List<AxisAlignedBB> boxes = new ArrayList<>();
 
-                double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
-                double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
-                double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
+        double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
+        double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
+        double offsetZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
 
-                for (AxisAlignedBB box : boxes) {
-                    AxisAlignedBB target = box.grow(0.002D).offset(-offsetX, -offsetY, -offsetZ);
-                    RenderGlobal.drawSelectionBoundingBox(target, 0.0F, 0.0F, 0.0F, 0.4F);
-                }
+        GlStateManager.pushMatrix();
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.glLineWidth(2.0F);
+        GlStateManager.disableTexture2D();
+        GlStateManager.depthMask(false);
 
-                GlStateManager.depthMask(true);
-                GlStateManager.enableTexture2D();
-                GlStateManager.disableBlend();
-                GlStateManager.enableAlpha();
-                GlStateManager.popMatrix();
-                event.setCanceled(true);
+        double x = pos.getX() - offsetX;
+        double y = pos.getY() - offsetY;
+        double z = pos.getZ() - offsetZ;
+
+        GlStateManager.translate(x + 0.5D, y + 0.5D, z + 0.5D);
+
+        if (!(iface instanceof OrientableBoundingBox)) {
+            for (BoundingBox box : iface.getBoundingBoxes(state, world, pos)) {
+                boxes.add(box.getDefault());
+            }
+        } else {
+            OrientableBoundingBox orientable = (OrientableBoundingBox) iface;
+            PropertyEnum<OrdinalFacing> property = orientable.getFacingProperty();
+            OrdinalFacing facing = state.getValue(property);
+
+            if (!state.getPropertyKeys().contains(property)) {
+                String p = property.toString();
+                String s = state.toString();
+                throw new IllegalStateException("Could not locate " + p + " in " + s + "!");
+            }
+
+            if (!facing.isCardinal()) {
+                GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
+            }
+
+            for (BoundingBox box : iface.getBoundingBoxes(state, world, pos)) {
+                boxes.add(box.get(facing.getCardinal()));
             }
         }
+
+        GlStateManager.translate(-0.5D, -0.5D, -0.5D);
+
+        for (AxisAlignedBB box : boxes) {
+            RenderGlobal.drawSelectionBoundingBox(box.grow(0.002D), 0.0F, 0.0F, 0.0F, 0.4F);
+        }
+
+        GlStateManager.depthMask(true);
+        GlStateManager.enableTexture2D();
+        GlStateManager.glLineWidth(0.2F);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.popMatrix();
+
+        event.setCanceled(true);
     }
 
 }
