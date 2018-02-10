@@ -3,6 +3,7 @@ package net.sleeplessdev.lib.event;
 import com.google.common.base.Equivalence;
 import com.google.common.base.Equivalence.Wrapper;
 import com.google.common.collect.Multimap;
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -69,6 +70,14 @@ public final class OreRegistryEvent extends Event implements IContextSetter {
         register(STACK_EQV.wrap(new ItemStack(item, 1, meta)), ore);
     }
 
+    public void register(Block block, String ore) {
+        register(STACK_EQV.wrap(new ItemStack(block)), ore);
+    }
+
+    public void register(Block block, int meta, String ore) {
+        register(STACK_EQV.wrap(new ItemStack(block, 1, meta)), ore);
+    }
+
     public void registerAll(ItemStack stack, String... ores) {
         for (String ore : ores) {
             register(stack, ore);
@@ -81,6 +90,12 @@ public final class OreRegistryEvent extends Event implements IContextSetter {
         }
     }
 
+    public void registerAll(Block block, String... ores) {
+        for (String ore : ores) {
+            register(new ItemStack(block), ore);
+        }
+    }
+
     public void registerAll(ItemStack stack, Collection<String> ores) {
         for (String ore : ores) {
             register(stack, ore);
@@ -90,6 +105,12 @@ public final class OreRegistryEvent extends Event implements IContextSetter {
     public void registerAll(Item item, Collection<String> ores) {
         for (String ore : ores) {
             register(new ItemStack(item), ore);
+        }
+    }
+
+    public void registerAll(Block block, Collection<String> ores) {
+        for (String ore : ores) {
+            register(new ItemStack(block), ore);
         }
     }
 
