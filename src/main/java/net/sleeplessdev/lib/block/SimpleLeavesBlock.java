@@ -39,6 +39,7 @@ public abstract class SimpleLeavesBlock extends BlockLeaves {
         setHardness(material.getHardness());
         setResistance(material.getResistance());
         setSoundType(material.getSound());
+        setCreativeTab(null);
     }
 
     public SimpleLeavesBlock(BlockMaterial material) {
@@ -47,6 +48,7 @@ public abstract class SimpleLeavesBlock extends BlockLeaves {
         setHardness(material.getHardness());
         setResistance(material.getResistance());
         setSoundType(material.getSound());
+        setCreativeTab(null);
     }
 
     public SimpleLeavesBlock() {

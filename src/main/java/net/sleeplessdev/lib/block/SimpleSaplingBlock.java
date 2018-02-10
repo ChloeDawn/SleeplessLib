@@ -31,6 +31,7 @@ public abstract class SimpleSaplingBlock extends BlockBush implements IGrowable 
         setHardness(material.getHardness());
         setResistance(material.getResistance());
         setSoundType(material.getSound());
+        setCreativeTab(null);
     }
 
     public SimpleSaplingBlock(BlockMaterial material) {
@@ -38,11 +39,13 @@ public abstract class SimpleSaplingBlock extends BlockBush implements IGrowable 
         setHardness(material.getHardness());
         setResistance(material.getResistance());
         setSoundType(material.getSound());
+        setCreativeTab(null);
     }
 
     public SimpleSaplingBlock() {
         super(Material.PLANTS);
         setSoundType(SoundType.PLANT);
+        setCreativeTab(null);
     }
 
     public abstract IBlockState getTreeWood(IBlockState state, IBlockAccess world, BlockPos pos);
