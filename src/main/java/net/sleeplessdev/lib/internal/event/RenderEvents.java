@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -19,10 +18,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.SleeplessLib;
 import net.sleeplessdev.lib.base.OrdinalFacing;
-import net.sleeplessdev.lib.client.render.CardinalSelectionBox;
 import net.sleeplessdev.lib.client.render.ExtendedSelectionBox;
 import net.sleeplessdev.lib.client.render.OrdinalSelectionBox;
-import net.sleeplessdev.lib.math.BoundingBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +45,9 @@ final class RenderEvents {
         state = state.getActualState(world, pos);
 
         ExtendedSelectionBox iface = (ExtendedSelectionBox) state.getBlock();
-
         List<AxisAlignedBB> boxes = new ArrayList<>();
+
+        iface.getSelectionBoundingBoxes(state, world, pos, boxes);
 
         double offsetX = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
         double offsetY = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
@@ -71,22 +69,7 @@ final class RenderEvents {
 
         GlStateManager.translate(x + 0.5D, y + 0.5D, z + 0.5D);
 
-        if (iface instanceof CardinalSelectionBox) {
-            CardinalSelectionBox cardinal = (CardinalSelectionBox) iface;
-            PropertyEnum<EnumFacing> property = cardinal.getFacingProperty();
-
-            if (!state.getPropertyKeys().contains(property)) {
-                String p = property.toString();
-                String s = state.toString();
-                throw new IllegalStateException("Could not locate " + p + " in " + s + "!");
-            }
-
-            EnumFacing facing = state.getValue(property);
-
-            for (BoundingBox box : iface.getBoundingBoxes(state, world, pos)) {
-                boxes.add(box.get(facing));
-            }
-        } else if (iface instanceof OrdinalSelectionBox) {
+        if (iface instanceof OrdinalSelectionBox) {
             OrdinalSelectionBox orientable = (OrdinalSelectionBox) iface;
             PropertyEnum<OrdinalFacing> property = orientable.getFacingProperty();
 
@@ -100,14 +83,6 @@ final class RenderEvents {
 
             if (!facing.isCardinal()) {
                 GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
-            }
-
-            for (BoundingBox box : iface.getBoundingBoxes(state, world, pos)) {
-                boxes.add(box.get(facing.getCardinal()));
-            }
-        } else {
-            for (BoundingBox box : iface.getBoundingBoxes(state, world, pos)) {
-                boxes.add(box.getDefault());
             }
         }
 
