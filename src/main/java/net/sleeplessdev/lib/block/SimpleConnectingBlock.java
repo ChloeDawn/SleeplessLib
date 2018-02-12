@@ -13,18 +13,33 @@ import net.sleeplessdev.lib.base.ColorVariant;
 
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public abstract class SimpleConnectingBlock extends SimpleBlock {
 
     public static final ImmutableMap<EnumFacing, PropertyBool> SIDES = Arrays.stream(EnumFacing.values())
             .collect(Maps.toImmutableEnumMap(Function.identity(), f -> PropertyBool.create(f.getName())));
 
+    private final Predicate<EnumFacing> sidePredicate;
+
+    public SimpleConnectingBlock(BlockMaterial material, ColorVariant color, Predicate<EnumFacing> sidePredicate) {
+        super(material, color);
+        this.sidePredicate = sidePredicate;
+    }
+
+    public SimpleConnectingBlock(BlockMaterial material, Predicate<EnumFacing> sidePredicate) {
+        super(material);
+        this.sidePredicate = sidePredicate;
+    }
+
     public SimpleConnectingBlock(BlockMaterial material, ColorVariant color) {
         super(material, color);
+        this.sidePredicate = s -> true;
     }
 
     public SimpleConnectingBlock(BlockMaterial material) {
         super(material);
+        this.sidePredicate = s -> true;
     }
 
     protected abstract boolean canConnectTo(EnumFacing side, IBlockAccess world, BlockPos pos);
@@ -34,6 +49,7 @@ public abstract class SimpleConnectingBlock extends SimpleBlock {
     public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos origin) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(origin);
         for (EnumFacing side : EnumFacing.VALUES) {
+            if (!sidePredicate.test(side)) continue;
             pos.move(side);
             PropertyBool key = SIDES.get(side);
             boolean value = canConnectTo(side, world, pos);
@@ -46,8 +62,9 @@ public abstract class SimpleConnectingBlock extends SimpleBlock {
     @Override
     protected BlockStateContainer createBlockState() {
         BlockStateContainer.Builder builder = new BlockStateContainer.Builder(this);
-        for (PropertyBool property : SIDES.values()) {
-            builder.add(property);
+        for (EnumFacing side : EnumFacing.VALUES) {
+            if (!sidePredicate.test(side)) continue;
+            builder.add(SIDES.get(side));
         }
         return builder.build();
     }
