@@ -20,6 +20,14 @@ public enum OrdinalFacing implements IStringSerializable {
 
     public static final OrdinalFacing[] VALUES = values();
 
+    public static final OrdinalFacing[] CARDINALS = new OrdinalFacing[] {
+            SOUTH, WEST, NORTH, EAST
+    };
+
+    public static final OrdinalFacing[] ORDINALS = new OrdinalFacing[] {
+            SOUTH_WEST, NORTH_WEST, NORTH_EAST, SOUTH_EAST
+    };
+
     private final EnumFacing primary;
     @Nullable
     private final EnumFacing secondary;
