@@ -4,25 +4,29 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 
+import javax.annotation.Nullable;
 import java.util.Locale;
 
 public enum OrdinalFacing implements IStringSerializable {
 
-    SOUTH(EnumFacing.SOUTH),
-    SOUTH_WEST(EnumFacing.WEST),
-    WEST(EnumFacing.WEST),
-    NORTH_WEST(EnumFacing.NORTH),
-    NORTH(EnumFacing.NORTH),
-    NORTH_EAST(EnumFacing.EAST),
-    EAST(EnumFacing.EAST),
-    SOUTH_EAST(EnumFacing.SOUTH);
-
-    private final EnumFacing cardinalEquivalent;
+    SOUTH(EnumFacing.SOUTH, null),
+    SOUTH_WEST(EnumFacing.WEST, EnumFacing.SOUTH),
+    WEST(EnumFacing.WEST, null),
+    NORTH_WEST(EnumFacing.NORTH, EnumFacing.WEST),
+    NORTH(EnumFacing.NORTH, null),
+    NORTH_EAST(EnumFacing.EAST, EnumFacing.NORTH),
+    EAST(EnumFacing.EAST, null),
+    SOUTH_EAST(EnumFacing.SOUTH, EnumFacing.EAST);
 
     public static final OrdinalFacing[] VALUES = values();
 
-    OrdinalFacing(EnumFacing cardinalEquivalent) {
-        this.cardinalEquivalent = cardinalEquivalent;
+    private final EnumFacing primary;
+    @Nullable
+    private final EnumFacing secondary;
+
+    OrdinalFacing(EnumFacing primary, @Nullable EnumFacing secondary) {
+        this.primary = primary;
+        this.secondary = secondary;
     }
 
     public static OrdinalFacing getFacingFromEntity(Entity entity) {
@@ -41,7 +45,16 @@ public enum OrdinalFacing implements IStringSerializable {
     }
 
     public EnumFacing getCardinal() {
-        return cardinalEquivalent;
+        return getPrimary();
+    }
+
+    public EnumFacing getPrimary() {
+        return primary;
+    }
+
+    @Nullable
+    public EnumFacing getSecondary() {
+        return secondary;
     }
 
     public boolean isCardinal() {
