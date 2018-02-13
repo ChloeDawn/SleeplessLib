@@ -1,6 +1,5 @@
 package net.sleeplessdev.lib.internal.event;
 
-import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
@@ -17,10 +16,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.sleeplessdev.lib.SleeplessLib;
-import net.sleeplessdev.lib.base.OrdinalFacing;
 import net.sleeplessdev.lib.client.render.ExtendedSelectionBox;
-import net.sleeplessdev.lib.client.render.OrdinalSelectionBox;
+import net.sleeplessdev.lib.client.render.OrientableSelectionBox;
 
+import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,21 +68,12 @@ final class RenderEvents {
 
         GlStateManager.translate(x + 0.5D, y + 0.5D, z + 0.5D);
 
-        if (iface instanceof OrdinalSelectionBox) {
-            OrdinalSelectionBox orientable = (OrdinalSelectionBox) iface;
-            PropertyEnum<OrdinalFacing> property = orientable.getFacingProperty();
-
-            if (!state.getPropertyKeys().contains(property)) {
-                String p = property.toString();
-                String s = state.toString();
-                throw new IllegalStateException("Could not locate " + p + " in " + s + "!");
-            }
-
-            OrdinalFacing facing = state.getValue(property);
-
-            if (!facing.isCardinal()) {
-                GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
-            }
+        if (iface instanceof OrientableSelectionBox) {
+            OrientableSelectionBox orientable = (OrientableSelectionBox) iface;
+            Vector3f angle = orientable.getRotationAngles(state, world, pos);
+            GlStateManager.rotate(angle.x, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(angle.y, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(angle.z, 0.0F, 0.0F, 1.0F);
         }
 
         GlStateManager.translate(-0.5D, -0.5D, -0.5D);
