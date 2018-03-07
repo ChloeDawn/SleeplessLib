@@ -30,6 +30,7 @@ public abstract class SimpleBlock extends Block {
         setHardness(material.getHardness());
         setResistance(material.getResistance());
         setSoundType(material.getSound());
+        lightOpacity = fullBlock ? 255 : 0;
     }
 
     public SimpleBlock(BlockMaterial material) {
@@ -37,6 +38,7 @@ public abstract class SimpleBlock extends Block {
         setHardness(material.getHardness());
         setResistance(material.getResistance());
         setSoundType(material.getSound());
+        lightOpacity = fullBlock ? 255 : 0;
     }
 
     public final void setFullBlock(boolean fullBlock) {
