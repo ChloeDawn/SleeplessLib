@@ -107,6 +107,11 @@ public abstract class SimpleBlock extends Block {
         return super.getUnlocalizedName().replace("tile.", "block.");
     }
 
+    @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+        return opaqueBlock ? 255 : 0;
+    }
+
     public void getCollisionBoxes(IBlockState state, IBlockAccess world, BlockPos pos, List<AxisAlignedBB> boxes) {
         boxes.add(state.getBoundingBox(world, pos));
     }
