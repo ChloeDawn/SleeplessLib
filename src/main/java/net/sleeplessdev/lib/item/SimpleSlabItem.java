@@ -26,7 +26,8 @@ public class SimpleSlabItem extends ItemBlock {
         if (slab instanceof SimpleSlabBlock) {
             this.slab = (SimpleSlabBlock) slab;
         } else throw new IllegalStateException(
-                "SimpleSlabItem cannot be applied to non-instance of SimpleSlabBlock!"
+                "SimpleSlabItem cannot be applied to "
+                + slab.getClass().getCanonicalName()
         );
     }
 
