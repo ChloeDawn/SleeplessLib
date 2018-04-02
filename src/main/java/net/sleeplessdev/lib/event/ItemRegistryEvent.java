@@ -1,11 +1,12 @@
 package net.sleeplessdev.lib.event;
 
-import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.sleeplessdev.lib.SleeplessLib;
+
+import java.util.Objects;
 
 public final class ItemRegistryEvent extends ForgeRegistryEvent<Item> {
 
@@ -16,8 +17,9 @@ public final class ItemRegistryEvent extends ForgeRegistryEvent<Item> {
     @Override
     public void register(Item entry) {
         if (entry instanceof ItemBlock && entry.getRegistryName() == null) {
-            SleeplessLib.LOGGER.warn("Registry name for ItemBlock was null, attempting to inherit name from Block parent.");
-            entry.setRegistryName(Block.getBlockFromItem(entry).getRegistryName());
+            ResourceLocation name = Objects.requireNonNull(((ItemBlock) entry).getBlock().getRegistryName());
+            SleeplessLib.LOGGER.debug("Attempting to inherit name from Block <{}> for registered ItemBlock", name);
+            entry.setRegistryName(name);
         }
         super.register(entry);
     }
