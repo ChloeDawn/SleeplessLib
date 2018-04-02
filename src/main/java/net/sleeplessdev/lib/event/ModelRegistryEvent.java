@@ -4,12 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.IStateMapper;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.IContextSetter;
 import net.minecraftforge.fml.relauncher.Side;
@@ -132,12 +129,6 @@ public final class ModelRegistryEvent extends Event implements IContextSetter {
     public void register(Block block, IStateMapper mapper) {
         Objects.requireNonNull(block.getRegistryName());
         ModelLoader.setCustomStateMapper(block, mapper);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public <V extends TileEntity> void register(Class<V> blockEntity, TileEntitySpecialRenderer<V> renderer) {
-        Objects.requireNonNull(renderer);
-        ClientRegistry.bindTileEntitySpecialRenderer(blockEntity, renderer);
     }
 
 }
