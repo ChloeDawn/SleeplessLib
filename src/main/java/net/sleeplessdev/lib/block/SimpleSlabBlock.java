@@ -54,18 +54,15 @@ public abstract class SimpleSlabBlock extends SimpleBlock {
     }
 
     public final boolean isLower(IBlockState state) {
-        return state.getPropertyKeys().contains(VARIANT)
-                && Variant.LOWER == state.getValue(VARIANT);
+        return state.getValue(VARIANT) == Variant.LOWER;
     }
 
     public final boolean isUpper(IBlockState state) {
-        return state.getPropertyKeys().contains(VARIANT)
-                && Variant.UPPER == state.getValue(VARIANT);
+        return state.getValue(VARIANT) == Variant.UPPER;
     }
 
     public final boolean isDouble(IBlockState state) {
-        return state.getPropertyKeys().contains(VARIANT)
-                && Variant.DOUBLE == state.getValue(VARIANT);
+        return state.getValue(VARIANT) == Variant.DOUBLE;
     }
 
     @Override
