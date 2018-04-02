@@ -27,6 +27,7 @@ public final class ItemRegistryEvent extends ForgeRegistryEvent<Item> {
     @Override
     public void register(Item entry, ResourceLocation name) {
         if ("item.null".equals(entry.getUnlocalizedName())) {
+            SleeplessLib.LOGGER.debug("Item <{}> is missing an unlocalized name, creating one from registry name", name);
             entry.setUnlocalizedName(name.getResourcePath());
         }
         super.register(entry, name);

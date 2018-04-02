@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.sleeplessdev.lib.SleeplessLib;
 import net.sleeplessdev.lib.base.ModContainers;
 
 public final class BlockRegistryEvent extends ForgeRegistryEvent<Block> {
@@ -17,6 +18,7 @@ public final class BlockRegistryEvent extends ForgeRegistryEvent<Block> {
     @Override
     public void register(Block entry, ResourceLocation name) {
         if ("block.null".equals(entry.getUnlocalizedName())) {
+            SleeplessLib.LOGGER.debug("Block <{}> is missing an unlocalized name, creating one from registry name", name);
             entry.setUnlocalizedName(name.getResourcePath());
         }
         super.register(entry, name);
