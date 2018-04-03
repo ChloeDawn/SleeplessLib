@@ -35,10 +35,14 @@ public class CreativeTab extends CreativeTabs {
         return this;
     }
 
+    public String getUnlocalizedLabel() {
+        return "item_group." + label + ".label";
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public final String getTranslatedTabLabel() {
-        return "tab." + label + ".label";
+        return getUnlocalizedLabel();
     }
 
     @Override
