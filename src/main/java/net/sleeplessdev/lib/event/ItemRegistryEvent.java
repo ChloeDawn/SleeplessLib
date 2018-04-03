@@ -18,7 +18,7 @@ public final class ItemRegistryEvent extends ForgeRegistryEvent<Item> {
     public void register(Item entry) {
         if (entry instanceof ItemBlock && entry.getRegistryName() == null) {
             ResourceLocation name = Objects.requireNonNull(((ItemBlock) entry).getBlock().getRegistryName());
-            SleeplessLib.LOGGER.debug("Attempting to inherit registry name from Block <{}> for registered ItemBlock", name);
+            SleeplessLib.LOGGER.debug("Inheriting registry name from Block <{}> for registered ItemBlock", name);
             entry.setRegistryName(name);
         }
         super.register(entry);
