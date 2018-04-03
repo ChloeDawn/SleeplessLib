@@ -57,7 +57,7 @@ final class EventBusManager {
     @SideOnly(Side.CLIENT)
     protected static void onModelRegistry(net.minecraftforge.client.event.ModelRegistryEvent event) {
         MinecraftForge.EVENT_BUS.post(new net.sleeplessdev.lib.event.ModelRegistryEvent(event));
-        MinecraftForge.EVENT_BUS.post(new RendererRegistryEvent());
+        MinecraftForge.EVENT_BUS.post(new RendererRegistryEvent(event));
         MinecraftForge.EVENT_BUS.post(new ColorRegistryEvent(itemColorMap, blockColorMap));
     }
 

@@ -3,6 +3,7 @@ package net.sleeplessdev.lib.event;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -15,7 +16,7 @@ import java.util.Objects;
 
 public final class RendererRegistryEvent extends Event implements IContextSetter {
 
-    protected RendererRegistryEvent() {}
+    protected RendererRegistryEvent(ModelRegistryEvent event) {}
 
     @SideOnly(Side.CLIENT)
     public <V extends TileEntity> void register(Class<V> blockEntityClass, TileEntitySpecialRenderer<V> blockEntityRenderer) {
