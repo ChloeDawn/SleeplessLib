@@ -60,8 +60,8 @@ public class BoundingBox {
             case DOWN: return new AxisAlignedBB(1 - maxX, minZ, 1 - maxY, 1 - minX, maxZ, 1 - minY);
             case UP: return new AxisAlignedBB(minX, 1 - maxZ, minY, maxX, 1 - minZ, maxY);
             case SOUTH: return new AxisAlignedBB(1 - maxX, minY, 1 - maxZ, 1 - minX, maxY, 1 - minZ);
-            case WEST: return new AxisAlignedBB(minZ, minY, minX, maxZ, maxY, maxX);
-            case EAST: return new AxisAlignedBB(1 - maxZ, minY, 1 - maxX, 1 - minZ, maxY, 1 - minX);
+            case WEST: return new AxisAlignedBB(minZ, minY, 1 - maxX, maxZ, maxY, 1 - minX);
+            case EAST: return new AxisAlignedBB(1 - maxZ, minY, minX, 1 - minZ, maxY, maxX);
         }
         return aabbNorth;
     }
