@@ -45,6 +45,34 @@ public enum OrdinalFacing implements IStringSerializable {
         return OrdinalFacing.VALUES[c >= 0 && c < 8 ? c : 0];
     }
 
+    public int getIndex() {
+        return ordinal();
+    }
+
+    public int getCardinalIndex() {
+        if (isCardinal()) {
+            switch (this) {
+                case SOUTH: return 0;
+                case WEST:  return 1;
+                case NORTH: return 2;
+                case EAST:  return 3;
+            }
+        }
+        throw new IllegalStateException(name() + " has no cardinal index!");
+    }
+
+    public int getOrdinalIndex() {
+        if (!isCardinal()) {
+            switch (this) {
+                case SOUTH_WEST: return 0;
+                case NORTH_WEST: return 1;
+                case NORTH_EAST: return 2;
+                case SOUTH_EAST: return 3;
+            }
+        }
+        throw new IllegalStateException(name() + " has no ordinal index!");
+    }
+
     public int getAngle() {
         return ordinal() * 45;
     }
