@@ -15,7 +15,7 @@ public final class SleeplessLib {
     public static final String NAME = "Sleepless Lib";
     public static final String VERSION = "%VERSION%";
 
-    public static final Logger LOGGER = LogManager.getLogger(NAME);
+    public static final Logger LOGGER = LogManager.getLogger(ID);
 
     private static boolean deobfuscatedEnvironment;
 
