@@ -1,8 +1,10 @@
 package net.sleeplessdev.lib;
 
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,10 +17,24 @@ public final class SleeplessLib {
 
     public static final Logger LOGGER = LogManager.getLogger(NAME);
 
-    @Mod.EventHandler
-    public void onInit(FMLInitializationEvent event) {}
+    private static boolean deobfuscatedEnvironment;
+
+    public static boolean isDeobfuscatedEnvironment() {
+        return deobfuscatedEnvironment;
+    }
 
     @Mod.EventHandler
-    public void onPostInit(FMLPostInitializationEvent event) {}
+    public void onPreInitialization(FMLPreInitializationEvent event) {
+        Object o = Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        if (o instanceof Boolean) {
+            deobfuscatedEnvironment = (boolean) o;
+        } else LOGGER.error("Failed to retrieve environment state from launch blackboard!");
+    }
+
+    @Mod.EventHandler
+    public void onInitialization(FMLInitializationEvent event) {}
+
+    @Mod.EventHandler
+    public void onPostInitialization(FMLPostInitializationEvent event) {}
 
 }

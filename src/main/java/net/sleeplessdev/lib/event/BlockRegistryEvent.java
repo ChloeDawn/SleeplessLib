@@ -6,12 +6,28 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.sleeplessdev.lib.SleeplessLib;
 import net.sleeplessdev.lib.base.ModContainers;
+
+import java.util.Objects;
 
 public final class BlockRegistryEvent extends ForgeRegistryEvent<Block> {
 
     protected BlockRegistryEvent(IForgeRegistry<Block> registry) {
         super(registry);
+    }
+
+    @Override
+    public void register(Block entry) {
+        if ("block.null".equals(entry.getUnlocalizedName()) || "tile.null".equals(entry.getUnlocalizedName())) {
+            if (SleeplessLib.isDeobfuscatedEnvironment()) {
+                SleeplessLib.LOGGER.warn("Block <{}> is missing an unlocalized name!", entry.getRegistryName());
+                SleeplessLib.LOGGER.warn("Attempting to define one from the block's registry name path");
+                SleeplessLib.LOGGER.info("This warning will not be displayed outside of your dev environment");
+            }
+            entry.setUnlocalizedName(Objects.requireNonNull(entry.getRegistryName()).getResourcePath());
+        }
+        super.register(entry);
     }
 
     public void register(Class<? extends TileEntity> blockEntity, String key) {
