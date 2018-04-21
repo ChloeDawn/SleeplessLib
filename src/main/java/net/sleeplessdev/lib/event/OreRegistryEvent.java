@@ -6,35 +6,17 @@ import com.google.common.collect.Multimap;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.IContextSetter;
 import net.minecraftforge.oredict.OreDictionary;
+import net.sleeplessdev.lib.item.ItemStacks;
 
 import java.util.Collection;
 import java.util.Map.Entry;
 
 public final class OreRegistryEvent extends Event implements IContextSetter {
 
-    private static final Equivalence<ItemStack> STACK_EQV = new Equivalence<ItemStack>() {
-        @Override
-        protected boolean doEquivalent(ItemStack a, ItemStack b) {
-            return ItemStack.areItemStackShareTagsEqual(a, b);
-        }
-
-        @Override
-        @SuppressWarnings("ConstantConditions")
-        protected int doHash(ItemStack stack) {
-            int result = stack.getItem().getRegistryName().hashCode();
-            result = 31 * result + stack.getItemDamage();
-            if (stack.hasTagCompound()) {
-                NBTTagCompound nbt = stack.getTagCompound();
-                result = 31 * result + nbt.hashCode();
-            }
-            return result;
-        }
-    };
-
+    private final Equivalence<ItemStack> eqv = ItemStacks.equivalence();
     private final Multimap<Wrapper<ItemStack>, String> ores;
 
     protected OreRegistryEvent(Multimap<Wrapper<ItemStack>, String> ores) {
@@ -59,23 +41,23 @@ public final class OreRegistryEvent extends Event implements IContextSetter {
     }
 
     public void register(ItemStack stack, String ore) {
-        register(STACK_EQV.wrap(stack), ore);
+        register(eqv.wrap(stack), ore);
     }
 
     public void register(Item item, String ore) {
-        register(STACK_EQV.wrap(new ItemStack(item)), ore);
+        register(eqv.wrap(new ItemStack(item)), ore);
     }
 
     public void register(Item item, int meta, String ore) {
-        register(STACK_EQV.wrap(new ItemStack(item, 1, meta)), ore);
+        register(eqv.wrap(new ItemStack(item, 1, meta)), ore);
     }
 
     public void register(Block block, String ore) {
-        register(STACK_EQV.wrap(new ItemStack(block)), ore);
+        register(eqv.wrap(new ItemStack(block)), ore);
     }
 
     public void register(Block block, int meta, String ore) {
-        register(STACK_EQV.wrap(new ItemStack(block, 1, meta)), ore);
+        register(eqv.wrap(new ItemStack(block, 1, meta)), ore);
     }
 
     public void registerAll(ItemStack stack, String... ores) {
